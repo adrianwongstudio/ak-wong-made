@@ -1,0 +1,23 @@
+{
+  "name": "akwongmade",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.1.6"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.10",
+    "sharp": "^0.35.3",
+    "vitest": "^4.1.10"
+  }
+}
