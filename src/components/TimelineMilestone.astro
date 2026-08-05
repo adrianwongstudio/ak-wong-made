@@ -1,0 +1,118 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { entry: CollectionEntry<'life'>; hasDetail?: boolean; }
+const { entry, hasDetail = true } = Astro.props;
+const d = entry.data;
+const slug = entry.id.replace(/\.md$/, '');
+const isBirth = d.type === 'birth';
+---
+{isBirth ? (
+  <div class="birth">
+    <div class="year">&mdash; {d.year}</div>
+    <h2>{d.title}</h2>
+  </div>
+) : (
+  <article class:list={['milestone', d.featured && 'featured']}>
+    <div class="year">&mdash; {d.year}</div>
+    <h3>{d.title}</h3>
+    <div class="card">
+      <div class="img" data-caption={d.title}></div>
+      <div class="body">
+        <slot />
+        {hasDetail && (
+          <a href={`/life/${slug}/`} class="more">Read the fuller story &rarr;</a>
+        )}
+      </div>
+    </div>
+  </article>
+)}
+
+<style>
+  .milestone {
+    position: relative;
+    padding: 0 0 3rem 90px;
+  }
+  .milestone::before {
+    content: "";
+    position: absolute;
+    left: 25px; top: 12px;
+    width: 16px; height: 16px;
+    background: var(--bg);
+    border: 2.5px solid var(--brand);
+    border-radius: 50%;
+    z-index: 2;
+  }
+  .year {
+    font: 500 0.72rem/1 var(--mono);
+    color: var(--accent);
+    letter-spacing: 0.16em;
+    margin-bottom: 0.5rem;
+  }
+  h3 {
+    font: 700 1.55rem/1.15 var(--display);
+    color: var(--brand);
+    letter-spacing: -0.015em; margin: 0 0 1rem;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .img {
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 100%);
+    position: relative;
+    border-bottom: 1px solid var(--line);
+  }
+  .img::after {
+    content: attr(data-caption);
+    position: absolute; inset: auto 0 0.6rem 0;
+    text-align: center;
+    font: 500 0.65rem/1 var(--mono);
+    color: var(--text-mute);
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .body { padding: 1.5rem 1.75rem 1.75rem; }
+  .body :global(p) { margin: 0 0 1rem; line-height: 1.6; }
+  .body :global(p:last-child) { margin-bottom: 0; }
+  .more {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    margin-top: 0.6rem;
+    font-size: var(--step--1);
+    font-weight: 500;
+  }
+
+  .featured .card { background: var(--bg); }
+  .featured .img {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-ink) 100%);
+  }
+  .featured .img::after { color: var(--accent); }
+
+  .birth {
+    position: relative;
+    padding: 1rem 0 1rem 90px;
+    margin-top: 1rem;
+  }
+  .birth::before {
+    content: "";
+    position: absolute;
+    left: 20px; top: 50%;
+    width: 26px; height: 26px;
+    background: var(--emphasis);
+    border: 3px solid var(--bg);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 0 2px var(--emphasis);
+  }
+  .birth .year { color: var(--emphasis); margin-bottom: 0.35rem; }
+  .birth h2 {
+    font: 700 var(--step-1)/1.05 var(--display);
+    color: var(--text); margin: 0;
+  }
+  @media (max-width: 600px) {
+    .milestone, .birth { padding-left: 65px; }
+    .milestone::before { left: 15px; }
+    .birth::before { left: 10px; }
+  }
+</style>

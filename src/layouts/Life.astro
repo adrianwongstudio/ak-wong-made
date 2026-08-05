@@ -1,0 +1,27 @@
+---
+import Base from './Base.astro';
+import type { CollectionEntry } from 'astro:content';
+interface Props { entry: CollectionEntry<'life'>; }
+const { entry } = Astro.props;
+const d = entry.data;
+---
+<Base title={`${d.title} — AK Wong Made`} current="life">
+  <article class="life wrap wrap--narrow">
+    <div class="mono-label">{d.era} &mdash; {d.year}</div>
+    <h1>{d.title}</h1>
+    <div class="prose"><slot /></div>
+    <p style="margin-top: var(--stack);"><a href="/life/">&larr; Back to timeline</a></p>
+  </article>
+</Base>
+
+<style>
+  .life { padding: calc(var(--stack) * 0.9) 0 var(--stack); }
+  h1 {
+    font: 800 var(--step-3)/1 var(--display);
+    color: var(--brand);
+    letter-spacing: -0.025em;
+    margin: 0 0 2rem; max-width: 22ch;
+  }
+  .prose :global(p) { line-height: 1.75; margin: 0 0 1.2rem; font-size: var(--step-1); }
+  .prose :global(h2) { font: 700 var(--step-2)/1.1 var(--display); color: var(--brand); margin: 2.5rem 0 0.8rem; }
+</style>

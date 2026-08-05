@@ -1,0 +1,17 @@
+---
+import Life from '../../layouts/Life.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('life', e => e.data.type === 'milestone');
+  return entries.map(e => ({
+    params: { slug: e.id.replace(/\.md$/, '') },
+    props: { entry: e },
+  }));
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<Life entry={entry}>
+  <Content />
+</Life>

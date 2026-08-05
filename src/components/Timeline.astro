@@ -1,0 +1,58 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import TimelineEra from './TimelineEra.astro';
+import TimelineMilestone from './TimelineMilestone.astro';
+import { eras } from '../data/eras';
+import { render } from 'astro:content';
+
+interface Props { entries: CollectionEntry<'life'>[]; }
+const { entries } = Astro.props;
+
+const sorted = [...entries].sort((a, b) => {
+  if (b.data.year !== a.data.year) return b.data.year - a.data.year;
+  return (a.data.order ?? 0) - (b.data.order ?? 0);
+});
+
+const rendered = await Promise.all(
+  sorted.map(async e => ({ entry: e, Content: (await render(e)).Content })),
+);
+
+const byEra = eras
+  .map(era => ({ era, entries: rendered.filter(r => r.entry.data.era === era.key) }))
+  .filter(g => g.entries.length > 0);
+---
+<div class="timeline">
+  <div class="spine"></div>
+  {byEra.map(group => (
+    <>
+      <TimelineEra era={group.era} />
+      {group.entries.map(({ entry, Content }) => (
+        <TimelineMilestone entry={entry} hasDetail={entry.data.type === 'milestone'}>
+          <Content />
+        </TimelineMilestone>
+      ))}
+    </>
+  ))}
+</div>
+
+<style>
+  .timeline {
+    position: relative;
+    padding: 0 0 var(--stack);
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .spine {
+    position: absolute;
+    left: 32px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0,
+      var(--brand) 40px,
+      var(--brand) calc(100% - 40px),
+      transparent 100%
+    );
+  }
+  @media (max-width: 600px) { .spine { left: 22px; } }
+</style>

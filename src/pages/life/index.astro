@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro';
+import Timeline from '../../components/Timeline.astro';
+import { getCollection } from 'astro:content';
+import { eras } from '../../data/eras';
+
+const entries = await getCollection('life');
+---
+<Base title="Life Timeline — AK Wong Made" current="life">
+  <section class="page-hero wrap">
+    <div class="mono-label">Life Timeline</div>
+    <h1>The road that got me here.</h1>
+    <p class="lead">
+      A working index of the moments, decisions, and detours that shaped
+      how I think and what I build. Newest at the top. Click any milestone
+      to read the fuller story.
+    </p>
+  </section>
+
+  <nav class="eras" aria-label="Timeline eras">
+    <div class="wrap row">
+      <span class="label">Jump to era &mdash;</span>
+      {eras.map(era => (
+        <a href={`#${era.slug}`} class="chip">
+          {era.key} <span class="yr">{era.years}</span>
+        </a>
+      ))}
+    </div>
+  </nav>
+
+  <Timeline entries={entries} />
+</Base>
+
+<style>
+  .page-hero { padding: calc(var(--stack) * 0.9) 0 calc(var(--stack) * 0.5); }
+  .page-hero h1 {
+    font: 800 var(--step-3)/0.98 var(--display);
+    color: var(--brand);
+    letter-spacing: -0.025em;
+    margin: 0 0 1.5rem; max-width: 14ch;
+  }
+  .page-hero .lead {
+    font-size: var(--step-1); max-width: 55ch;
+    line-height: 1.5; margin: 0;
+  }
+
+  .eras {
+    position: sticky; top: 63px; z-index: 10;
+    background: rgba(245,240,230,0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.85rem 0;
+    margin-bottom: var(--stack);
+  }
+  .eras .row {
+    display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  }
+  .eras .label {
+    font: 500 0.68rem/1 var(--mono);
+    color: var(--accent);
+    letter-spacing: 0.16em; text-transform: uppercase;
+    margin-right: 0.5rem;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    color: var(--text); background: var(--bg);
+    text-decoration: none;
+    font: 500 var(--step--1)/1 var(--body);
+  }
+  .chip:hover { background: var(--surface); }
+  .chip .yr {
+    font: 500 0.65rem/1 var(--mono);
+    color: var(--text-mute);
+    letter-spacing: 0.1em;
+  }
+</style>

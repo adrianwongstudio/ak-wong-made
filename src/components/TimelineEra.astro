@@ -1,0 +1,43 @@
+---
+import type { Era } from '../data/eras';
+interface Props { era: Era; }
+const { era } = Astro.props;
+---
+<div class="era-break" id={era.slug}>
+  <div class="era-label">Era &mdash; {era.years}</div>
+  <h2>{era.key}</h2>
+</div>
+
+<style>
+  .era-break {
+    position: relative;
+    padding: 1.5rem 0 1.5rem 90px;
+    margin: 3rem 0 2rem;
+  }
+  .era-break::before {
+    content: "";
+    position: absolute;
+    left: 20px; top: 50%;
+    width: 26px; height: 26px;
+    background: var(--accent);
+    border: 3px solid var(--bg);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+  .era-label {
+    font: 500 0.72rem/1 var(--mono);
+    color: var(--accent);
+    letter-spacing: 0.16em; text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  h2 {
+    font: 700 var(--step-2)/1.05 var(--display);
+    color: var(--text);
+    letter-spacing: -0.02em; margin: 0;
+  }
+  @media (max-width: 600px) {
+    .era-break { padding-left: 65px; }
+    .era-break::before { left: 10px; }
+  }
+</style>
