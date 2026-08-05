@@ -1,0 +1,496 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference implementation — portfolio patterns</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ─────────────────────────────────────────────────────────
+   TOKENS — reskin the whole site from here
+   ───────────────────────────────────────────────────────── */
+:root {
+  --ink:      #0A0E13;
+  --ink-2:    #121A22;
+  --line:     #1E2932;
+  --paper:    #E8ECEF;
+  --muted:    #78889A;
+  --accent:   #7C6CFF;
+
+  --display: "Bricolage Grotesque", system-ui, sans-serif;
+  --body:    "Inter", system-ui, sans-serif;
+  --mono:    "JetBrains Mono", ui-monospace, monospace;
+
+  --step--1: clamp(0.78rem, 0.75rem + 0.15vw, 0.85rem);
+  --step-0:  clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --step-1:  clamp(1.3rem, 1.15rem + 0.7vw, 1.7rem);
+  --step-2:  clamp(1.9rem, 1.5rem + 1.9vw, 3rem);
+  --step-3:  clamp(2.8rem, 1.8rem + 4.6vw, 6.5rem);
+
+  --gutter: clamp(1.25rem, 5vw, 5rem);
+  --stack:  clamp(5rem, 12vh, 9rem);
+  --measure: 62ch;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font: 400 var(--step-0)/1.6 var(--body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img, svg, video { display: block; max-width: 100%; }
+a { color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.skip {
+  position: absolute; left: -9999px;
+  background: var(--accent); color: #fff;
+  padding: 0.75rem 1rem; z-index: 100;
+}
+.skip:focus { left: 1rem; top: 1rem; }
+
+.wrap { max-width: 78rem; margin-inline: auto; padding-inline: var(--gutter); }
+
+/* Display type — the personality carrier */
+.display {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: var(--step-3);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  margin: 0;
+  text-wrap: balance;
+}
+.display em { font-style: italic; font-weight: 400; }
+.display .hl { color: var(--accent); }
+
+h2.display { font-size: var(--step-2); }
+
+.eyebrow {
+  font: 500 var(--step--1)/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 1.5rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.eyebrow::after {
+  content: ""; flex: 1; height: 1px; background: var(--line);
+}
+
+.lede { color: var(--muted); max-width: var(--measure); font-size: var(--step-1); line-height: 1.45; }
+
+/* ─────────────────────────────────────────────────────────
+   1. HEADER
+   ───────────────────────────────────────────────────────── */
+.site-header {
+  position: fixed; inset: 0 0 auto 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem var(--gutter);
+  backdrop-filter: blur(14px);
+  background: color-mix(in oklab, var(--ink) 55%, transparent);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s, background 0.3s;
+}
+.site-header[data-stuck="true"] {
+  border-bottom-color: var(--line);
+  background: color-mix(in oklab, var(--ink) 88%, transparent);
+}
+.brand { font: 800 1rem/1 var(--display); letter-spacing: -0.03em; text-decoration: none; }
+.brand span { color: var(--accent); }
+.nav { display: flex; gap: 1.75rem; font: 500 var(--step--1)/1 var(--mono); }
+.nav a { text-decoration: none; color: var(--muted); transition: color 0.2s; }
+.nav a:hover { color: var(--paper); }
+
+/* ─────────────────────────────────────────────────────────
+   2. VIDEO HERO
+   Layered: CSS gradient floor → video → grain/grid → scrim → text
+   The gradient floor means it still looks intentional if the
+   video 404s, is still loading, or the user is on save-data.
+   ───────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid; align-items: end;
+  padding: 8rem 0 clamp(3rem, 8vh, 6rem);
+  isolation: isolate;
+  overflow: hidden;
+}
+.hero__bg { position: absolute; inset: 0; z-index: -3; background: var(--ink-2); }
+.hero__bg::after {
+  content: "";
+  position: absolute; inset: -20%;
+  background:
+    radial-gradient(48% 55% at 22% 28%, color-mix(in oklab, var(--accent) 45%, transparent), transparent 70%),
+    radial-gradient(42% 48% at 78% 72%, #0E5C6B, transparent 70%),
+    radial-gradient(60% 60% at 55% 100%, #1B2430, transparent 70%);
+  filter: blur(30px);
+  animation: drift 24s ease-in-out infinite alternate;
+}
+@keyframes drift {
+  from { transform: scale(1) translate3d(0,0,0); }
+  to   { transform: scale(1.18) translate3d(-4%, -3%, 0); }
+}
+
+.hero__video {
+  position: absolute; inset: 0; z-index: -2;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.hero__video[data-ready="true"] { opacity: 0.55; }
+
+/* Blueprint grid + scrim — the signature texture */
+.hero__grid {
+  position: absolute; inset: 0; z-index: -1;
+  background-image:
+    linear-gradient(to bottom, transparent 0%, color-mix(in oklab, var(--ink) 92%, transparent) 88%),
+    linear-gradient(to right, color-mix(in oklab, var(--paper) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--paper) 5%, transparent) 1px, transparent 1px);
+  background-size: 100% 100%, 88px 88px, 88px 88px;
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+}
+
+.hero__inner { position: relative; }
+.hero .display { max-width: 16ch; }
+.hero .lede { margin: 1.75rem 0 2.5rem; }
+
+.hero__meta {
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem;
+  font: 400 var(--step--1)/1 var(--mono);
+  color: var(--muted);
+  margin-top: 3.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+/* Button */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.65rem;
+  padding: 0.95rem 1.6rem;
+  background: var(--accent); color: #fff;
+  font: 500 var(--step--1)/1 var(--mono);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  text-decoration: none; border-radius: 2px;
+  transition: transform 0.18s cubic-bezier(.2,.9,.3,1), box-shadow 0.18s;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -8px color-mix(in oklab, var(--accent) 70%, transparent); }
+.btn--ghost { background: transparent; color: var(--paper); border: 1px solid var(--line); }
+.btn--ghost:hover { border-color: var(--accent); box-shadow: none; }
+.btn svg { width: 1em; height: 1em; }
+
+/* ─────────────────────────────────────────────────────────
+   3. LOGO WALL
+   Key move: force every logo to ONE colour so the row reads as
+   a texture, not a ransom note. mask-image does this regardless
+   of the source SVG's internal fills — no need to edit the files.
+   ───────────────────────────────────────────────────────── */
+.logos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: center;
+  padding-block: 2rem;
+}
+.logo {
+  --src: none;
+  height: 30px;
+  background-color: var(--muted);
+  mask-image: var(--src);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  opacity: 0.55;
+  transition: opacity 0.25s, background-color 0.25s, transform 0.25s;
+}
+.logo:hover { opacity: 1; background-color: var(--paper); transform: translateY(-3px); }
+
+/* ─────────────────────────────────────────────────────────
+   4. SECTIONS
+   ───────────────────────────────────────────────────────── */
+section { padding-block: var(--stack); }
+section + section { padding-top: 0; }
+
+.services {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-top: 3.5rem;
+}
+.service {
+  background: var(--ink);
+  padding: clamp(1.75rem, 3vw, 2.75rem);
+  transition: background 0.3s;
+}
+.service:hover { background: var(--ink-2); }
+.service__idx { font: 400 var(--step--1)/1 var(--mono); color: var(--accent); }
+.service h3 { font: 600 var(--step-1)/1.15 var(--display); letter-spacing: -0.02em; margin: 1.25rem 0 0.75rem; }
+.service p { color: var(--muted); margin: 0; font-size: var(--step--1); line-height: 1.65; }
+
+/* Project grid — mirrors the Astro /projects/ collection output */
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+  margin-top: 3.5rem;
+}
+.project {
+  display: block; text-decoration: none;
+  border: 1px solid var(--line);
+  background: var(--ink-2);
+  overflow: hidden;
+  transition: border-color 0.25s, transform 0.25s cubic-bezier(.2,.9,.3,1);
+}
+.project:hover { border-color: var(--accent); transform: translateY(-4px); }
+.project__thumb {
+  aspect-ratio: 16 / 10;
+  background:
+    radial-gradient(70% 90% at 30% 20%, color-mix(in oklab, var(--accent) 40%, transparent), transparent 70%),
+    linear-gradient(140deg, #16202B, #0B1016);
+  position: relative;
+}
+.project__thumb::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--paper) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--paper) 5%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+.project__body { padding: 1.5rem; }
+.project h3 { font: 600 var(--step-1)/1.1 var(--display); letter-spacing: -0.02em; margin: 0 0 0.4rem; }
+.project__kind { font: 400 var(--step--1)/1 var(--mono); color: var(--accent); }
+.project__stack {
+  margin-top: 1.25rem; padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  font: 400 var(--step--1)/1.5 var(--mono);
+  color: var(--muted);
+}
+
+/* CTA */
+.cta { text-align: center; }
+.cta .display { max-width: 20ch; margin-inline: auto; }
+.cta .lede { margin: 1.5rem auto 2.5rem; }
+
+/* Footer */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding-block: 3rem;
+  display: flex; flex-wrap: wrap; gap: 1.5rem;
+  justify-content: space-between; align-items: center;
+  font: 400 var(--step--1)/1.6 var(--mono);
+  color: var(--muted);
+}
+.site-footer a { color: var(--paper); text-decoration: none; border-bottom: 1px solid var(--line); }
+.site-footer a:hover { border-color: var(--accent); }
+
+/* ─────────────────────────────────────────────────────────
+   5. SCROLL REVEALS
+   Class-based so JS only toggles state; CSS owns all motion.
+   ───────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 0.7s cubic-bezier(.16,1,.3,1),
+      transform 0.7s cubic-bezier(.16,1,.3,1);
+    transition-delay: var(--delay, 0ms);
+  }
+  [data-reveal].is-visible { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .hero__bg::after { animation: none; }
+}
+</style>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header" id="header">
+  <a class="brand" href="/">YOUR<span>NAME</span></a>
+  <nav class="nav" aria-label="Primary">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ══ HERO ══ -->
+  <section class="hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <video class="hero__video" id="heroVideo"
+           autoplay muted loop playsinline preload="metadata"
+           poster="/media/hero-poster.jpg" aria-hidden="true" tabindex="-1">
+      <source src="/media/hero.webm" type="video/webm">
+      <source src="/media/hero.mp4" type="video/mp4">
+    </video>
+    <div class="hero__grid" aria-hidden="true"></div>
+
+    <div class="wrap hero__inner">
+      <p class="eyebrow">Independent engineer · Available Q4</p>
+      <h1 class="display">Interfaces that <em>ship</em> and <span class="hl">stay shipped</span>.</h1>
+      <p class="lede">Fifteen years building front ends that survive contact with real users, real data, and real deadlines.</p>
+      <a class="btn" href="#contact">
+        Book a call
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <div class="hero__meta">
+        <span>Groningen / remote</span>
+        <span>TypeScript · React · Svelte · Astro</span>
+        <span>Design systems · Performance · a11y</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ LOGO WALL ══ -->
+  <section class="wrap" data-reveal>
+    <p class="eyebrow">Selected clients</p>
+    <div class="logos" id="logoWall"></div>
+  </section>
+
+  <!-- ══ SERVICES ══ -->
+  <section class="wrap" id="services">
+    <p class="eyebrow" data-reveal>What I do</p>
+    <h2 class="display" data-reveal>Small team energy, <em>senior</em> output.</h2>
+    <div class="services">
+      <div class="service" data-reveal style="--delay:0ms">
+        <span class="service__idx">01</span>
+        <h3>Product front ends</h3>
+        <p>Dashboards, editors, and internal tools where the interaction model is the hard part, not the CSS.</p>
+      </div>
+      <div class="service" data-reveal style="--delay:90ms">
+        <span class="service__idx">02</span>
+        <h3>Design systems</h3>
+        <p>Token pipelines, component libraries, and the documentation that stops them rotting in six months.</p>
+      </div>
+      <div class="service" data-reveal style="--delay:180ms">
+        <span class="service__idx">03</span>
+        <h3>Performance rescue</h3>
+        <p>Core Web Vitals triage on sites that were fast in dev and are not fast in production.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ PROJECTS ══ -->
+  <section class="wrap" id="work">
+    <p class="eyebrow" data-reveal>Recent work</p>
+    <h2 class="display" data-reveal>Things I made <em>on purpose</em>.</h2>
+    <div class="projects" id="projectGrid"></div>
+  </section>
+
+  <!-- ══ CTA ══ -->
+  <section class="wrap cta" id="contact" data-reveal>
+    <h2 class="display">Got something that needs <span class="hl">building</span>?</h2>
+    <p class="lede">Tell me the problem, not the spec. I'll tell you honestly whether I'm the right person.</p>
+    <a class="btn btn--ghost" href="mailto:you@example.com">you@example.com</a>
+  </section>
+
+</main>
+
+<footer class="wrap site-footer">
+  <span>© 2026 — built with Astro, hosted on Cloudflare Pages</span>
+  <span><a href="https://github.com">GitHub</a> · <a href="https://www.linkedin.com">LinkedIn</a></span>
+</footer>
+
+<script type="module">
+/* ─────────────────────────────────────────────────────────
+   A. Scroll reveal — one observer, unobserve after firing
+   ───────────────────────────────────────────────────────── */
+const targets = document.querySelectorAll('[data-reveal]');
+
+if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+  const io = new IntersectionObserver((entries, obs) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add('is-visible');
+      obs.unobserve(entry.target);          // fire once — never re-animate on scroll-up
+    }
+  }, { rootMargin: '0px 0px -12% 0px', threshold: 0.1 });
+
+  targets.forEach(el => io.observe(el));
+} else {
+  targets.forEach(el => el.classList.add('is-visible'));  // no-JS/reduced-motion: show everything
+}
+
+/* ─────────────────────────────────────────────────────────
+   B. Hero video — only fade in once it can actually paint.
+   Prevents the flash of black box before first frame.
+   ───────────────────────────────────────────────────────── */
+const video = document.getElementById('heroVideo');
+const saveData = navigator.connection?.saveData;
+const coarse = window.matchMedia('(max-width: 640px)').matches;
+
+if (saveData || coarse) {
+  video.remove();                            // gradient floor carries the hero
+} else {
+  video.addEventListener('loadeddata', () => video.dataset.ready = 'true', { once: true });
+  video.addEventListener('error', () => video.remove(), { once: true });
+  if (video.readyState >= 2) video.dataset.ready = 'true';
+}
+
+/* ─────────────────────────────────────────────────────────
+   C. Sticky header state
+   ───────────────────────────────────────────────────────── */
+const header = document.getElementById('header');
+const sentinel = document.createElement('div');
+document.body.prepend(sentinel);
+new IntersectionObserver(([e]) => {
+  header.dataset.stuck = String(!e.isIntersecting);
+}).observe(sentinel);
+
+/* ─────────────────────────────────────────────────────────
+   D. Demo data — in Astro these become a config array and a
+   content collection. See the recipe for the real version.
+   ───────────────────────────────────────────────────────── */
+const wordmark = (text) =>
+  `url("data:image/svg+xml,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 32"><text x="80" y="23" text-anchor="middle" font-family="Helvetica,Arial" font-size="20" font-weight="700" letter-spacing="-0.5">${text}</text></svg>`
+  )}")`;
+
+const clients = ['NORTHBOUND', 'Kessler', 'ARC/9', 'Vellum', 'Hoi!', 'Saft', 'Meridian', 'ØSTBLOK'];
+document.getElementById('logoWall').innerHTML = clients
+  .map(c => `<div class="logo" style="--src:${wordmark(c)}" role="img" aria-label="Logo of ${c}"></div>`)
+  .join('');
+
+const projects = [
+  { slug: 'northbound', title: 'Northbound', kind: 'Design system', stack: 'TypeScript · React · Style Dictionary' },
+  { slug: 'kessler',    title: 'Kessler Atlas', kind: 'Data product', stack: 'Svelte · D3 · DuckDB-WASM' },
+  { slug: 'arc9',       title: 'ARC/9', kind: 'Marketing site', stack: 'Astro · CSS · Cloudflare' },
+];
+document.getElementById('projectGrid').innerHTML = projects.map((p, i) => `
+  <a class="project" href="/projects/${p.slug}/" data-reveal style="--delay:${i * 90}ms">
+    <div class="project__thumb"></div>
+    <div class="project__body">
+      <span class="project__kind">${p.kind}</span>
+      <h3>${p.title}</h3>
+      <div class="project__stack">${p.stack}</div>
+    </div>
+  </a>`).join('');
+
+// Re-observe the nodes injected above
+document.querySelectorAll('.project[data-reveal]').forEach(el => {
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    new IntersectionObserver(([e], obs) => {
+      if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.disconnect(); }
+    }, { rootMargin: '0px 0px -12% 0px' }).observe(el);
+  } else {
+    el.classList.add('is-visible');
+  }
+});
+</script>

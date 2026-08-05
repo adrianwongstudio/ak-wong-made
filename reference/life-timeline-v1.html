@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Life Timeline — AK Wong Made</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --egyptian:      #1034A6;
+    --egyptian-ink:  #0B2478;
+    --gold:          #D4A017;
+    --coral:         #E63946;
+    --coral-ink:     #C42A38;
+    --ivory:         #F5F0E6;
+    --ivory-2:       #EDE6D6;
+    --charcoal:      #2B2B2B;
+    --charcoal-mute: #6B6B6B;
+    --rule:          #D9D0BC;
+
+    --display: "Bricolage Grotesque", system-ui, sans-serif;
+    --body:    "Inter", system-ui, sans-serif;
+    --mono:    "JetBrains Mono", ui-monospace, monospace;
+
+    --step--1: clamp(0.78rem, 0.75rem + 0.15vw, 0.85rem);
+    --step-0:  clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    --step-1:  clamp(1.25rem, 1.1rem + 0.6vw, 1.55rem);
+    --step-2:  clamp(1.9rem, 1.5rem + 1.9vw, 3rem);
+    --step-3:  clamp(2.6rem, 1.6rem + 4.6vw, 5.8rem);
+
+    --gutter: clamp(1.25rem, 5vw, 5rem);
+    --stack:  clamp(4rem, 10vh, 7.5rem);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--ivory);
+    color: var(--charcoal);
+    font: 400 var(--step-0)/1.6 var(--body);
+    -webkit-font-smoothing: antialiased;
+  }
+  img, svg { display: block; max-width: 100%; }
+  a { color: var(--egyptian); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+  a:hover { color: var(--egyptian-ink); }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 var(--gutter); }
+
+  /* ── HEADER ───────────────────────── */
+  header.site {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(245,240,230,0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+  header.site .row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 0;
+  }
+  .brand {
+    font: 800 1.05rem/1 var(--display);
+    letter-spacing: -0.01em;
+    color: var(--charcoal);
+    border: none;
+    display: inline-flex; align-items: center; gap: 0.55rem;
+  }
+  .brand .mono {
+    font: 500 0.7rem/1 var(--mono);
+    color: var(--gold);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--gold);
+    border-radius: 3px;
+  }
+  nav.site {
+    display: flex; align-items: center; gap: 1.6rem;
+    font: 500 var(--step--1)/1 var(--body);
+  }
+  nav.site a {
+    color: var(--charcoal);
+    border: none;
+    padding: 0.4rem 0;
+  }
+  nav.site a:hover { color: var(--egyptian); }
+  nav.site a.current {
+    border-bottom: 1.5px solid var(--egyptian);
+    color: var(--egyptian);
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.7rem 1.15rem;
+    font: 600 var(--step--1)/1 var(--body);
+    border-radius: 999px;
+    border: none; text-decoration: none;
+    transition: background .15s ease, color .15s ease;
+    cursor: pointer;
+  }
+  .btn-coral { background: var(--coral); color: var(--ivory); padding: 0.55rem 0.95rem; }
+  .btn-coral:hover { background: var(--coral-ink); }
+  .btn-outline {
+    background: transparent; color: var(--charcoal);
+    box-shadow: inset 0 0 0 1.5px var(--charcoal);
+  }
+  .btn-outline:hover { background: var(--charcoal); color: var(--ivory); }
+
+  /* ── HERO ─────────────────────────── */
+  .mono-label {
+    font: 500 0.72rem/1 var(--mono);
+    color: var(--gold);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+  .mono-label::before {
+    content: ""; width: 1.6rem; height: 1px; background: var(--gold);
+  }
+  .page-hero { padding: calc(var(--stack) * 0.9) 0 calc(var(--stack) * 0.5); }
+  .page-hero h1 {
+    font: 800 var(--step-3)/0.98 var(--display);
+    color: var(--egyptian);
+    letter-spacing: -0.025em;
+    margin: 0 0 1.5rem;
+    max-width: 14ch;
+  }
+  .page-hero .lead {
+    font-size: var(--step-1);
+    color: var(--charcoal);
+    max-width: 55ch;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ── ERA JUMP STRIP ───────────────── */
+  .eras {
+    position: sticky;
+    top: 63px;
+    z-index: 10;
+    background: rgba(245,240,230,0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.85rem 0;
+    margin-bottom: var(--stack);
+  }
+  .eras .row {
+    display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+    font: 500 var(--step--1)/1 var(--body);
+  }
+  .eras .label {
+    font: 500 0.68rem/1 var(--mono);
+    color: var(--gold);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-right: 0.5rem;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    color: var(--charcoal);
+    background: var(--ivory);
+  }
+  .chip:hover { background: var(--ivory-2); }
+  .chip .yr {
+    font: 500 0.65rem/1 var(--mono);
+    color: var(--charcoal-mute);
+    letter-spacing: 0.1em;
+  }
+  .chip.active {
+    background: var(--egyptian);
+    color: var(--ivory);
+    border-color: var(--egyptian);
+  }
+  .chip.active .yr { color: var(--gold); }
+
+  /* ── TIMELINE SPINE ───────────────── */
+  .timeline {
+    position: relative;
+    padding: 0 0 var(--stack);
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .spine {
+    position: absolute;
+    left: 32px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0,
+      var(--egyptian) 40px,
+      var(--egyptian) calc(100% - 40px),
+      transparent 100%
+    );
+  }
+  .era-break {
+    position: relative;
+    padding: 1.5rem 0 1.5rem 90px;
+    margin: 3rem 0 2rem;
+  }
+  .era-break::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    width: 26px; height: 26px;
+    background: var(--gold);
+    border: 3px solid var(--ivory);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 0 2px var(--gold);
+  }
+  .era-break .era-label {
+    font: 500 0.72rem/1 var(--mono);
+    color: var(--gold);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .era-break h2 {
+    font: 700 var(--step-2)/1.05 var(--display);
+    color: var(--charcoal);
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .era-break .era-more {
+    margin-top: 0.6rem;
+    font-size: var(--step--1);
+  }
+
+  .milestone {
+    position: relative;
+    padding: 0 0 3rem 90px;
+  }
+  .milestone::before {
+    content: "";
+    position: absolute;
+    left: 25px;
+    top: 12px;
+    width: 16px; height: 16px;
+    background: var(--ivory);
+    border: 2.5px solid var(--egyptian);
+    border-radius: 50%;
+    z-index: 2;
+  }
+  .milestone .year {
+    font: 500 0.72rem/1 var(--mono);
+    color: var(--gold);
+    letter-spacing: 0.16em;
+    margin-bottom: 0.5rem;
+  }
+  .milestone h3 {
+    font: 700 1.55rem/1.15 var(--display);
+    color: var(--egyptian);
+    letter-spacing: -0.015em;
+    margin: 0 0 1rem;
+  }
+  .milestone .card {
+    background: var(--ivory-2);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .milestone .img {
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, var(--ivory) 0%, var(--ivory-2) 100%);
+    position: relative;
+    border-bottom: 1px solid var(--rule);
+  }
+  .milestone .img::after {
+    content: attr(data-caption);
+    position: absolute; inset: auto 0 0.6rem 0;
+    text-align: center;
+    font: 500 0.65rem/1 var(--mono);
+    color: var(--charcoal-mute);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .milestone .img.blue {
+    background:
+      repeating-linear-gradient(45deg, rgba(16,52,166,0.1) 0 10px, rgba(16,52,166,0.03) 10px 20px),
+      var(--ivory-2);
+  }
+  .milestone .body {
+    padding: 1.5rem 1.75rem 1.75rem;
+  }
+  .milestone .body p {
+    margin: 0 0 1rem;
+    color: var(--charcoal);
+    line-height: 1.6;
+  }
+  .milestone .body p:last-child { margin-bottom: 0; }
+  .milestone .more {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    margin-top: 0.6rem;
+    font-size: var(--step--1);
+    font-weight: 500;
+  }
+
+  /* First milestone gets a special "highlight" treatment */
+  .milestone.featured .card { background: var(--ivory); }
+  .milestone.featured .img {
+    background: linear-gradient(135deg, var(--egyptian) 0%, var(--egyptian-ink) 100%);
+  }
+  .milestone.featured .img::after { color: var(--gold); }
+
+  /* End marker — birth */
+  .birth {
+    position: relative;
+    padding: 1rem 0 1rem 90px;
+    margin-top: 1rem;
+  }
+  .birth::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    width: 26px; height: 26px;
+    background: var(--coral);
+    border: 3px solid var(--ivory);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 0 2px var(--coral);
+  }
+  .birth .year {
+    font: 500 0.72rem/1 var(--mono);
+    color: var(--coral);
+    letter-spacing: 0.16em;
+    margin-bottom: 0.35rem;
+  }
+  .birth h2 {
+    font: 700 var(--step-1)/1.05 var(--display);
+    color: var(--charcoal);
+    margin: 0;
+  }
+
+  /* ── FOOTER ───────────────────────── */
+  footer.site {
+    background: var(--ivory-2);
+    padding: 2.5rem 0;
+    border-top: 1px solid var(--rule);
+    font-size: var(--step--1);
+    color: var(--charcoal-mute);
+  }
+  footer.site .row {
+    display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  }
+  footer.site a { color: var(--charcoal); }
+
+  /* ── PREVIEW STRIP ───────────────── */
+  .preview-note {
+    background: var(--charcoal); color: var(--ivory);
+    text-align: center; padding: 0.55rem 1rem;
+    font: 500 0.7rem/1 var(--mono);
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .preview-note span { color: var(--gold); }
+
+  @media (max-width: 600px) {
+    .spine { left: 22px; }
+    .milestone { padding-left: 65px; }
+    .milestone::before { left: 15px; }
+    .era-break, .birth { padding-left: 65px; }
+    .era-break::before, .birth::before { left: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="preview-note">Palette preview <span>·</span> AK Wong Made <span>·</span> Page: <span>/life/</span></div>
+
+<header class="site">
+  <div class="wrap row">
+    <a href="#" class="brand">
+      AK Wong Made
+      <span class="mono">STUDIO</span>
+    </a>
+    <nav class="site">
+      <a href="#">Work</a>
+      <a href="#">Gallery</a>
+      <a href="#" class="current">Life</a>
+      <a href="#">Blog</a>
+      <a href="#">About</a>
+      <a href="#" class="btn btn-coral">Contact &rarr;</a>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero wrap">
+  <div class="mono-label">Life Timeline</div>
+  <h1>The road that got me here.</h1>
+  <p class="lead">A working index of the moments, decisions, and detours that shaped how I think and what I build. Newest at the top. Click any milestone to read the fuller story.</p>
+</section>
+
+<section class="eras">
+  <div class="wrap row">
+    <span class="label">Jump to era —</span>
+    <a href="#era-studio" class="chip active">Studio Life <span class="yr">2023 →</span></a>
+    <a href="#era-corporate" class="chip">Corporate Years <span class="yr">2016–2022</span></a>
+    <a href="#era-university" class="chip">University <span class="yr">2012–2016</span></a>
+    <a href="#era-early" class="chip">Growing Up <span class="yr">1994–2012</span></a>
+  </div>
+</section>
+
+<div class="timeline">
+  <div class="spine"></div>
+
+  <!-- ERA: STUDIO LIFE -->
+  <div class="era-break" id="era-studio">
+    <div class="era-label">Era &mdash; 2023 to now</div>
+    <h2>Studio Life</h2>
+    <div class="era-more"><a href="#">Read the full era &rarr;</a></div>
+  </div>
+
+  <article class="milestone featured">
+    <div class="year">— 2026</div>
+    <h3>Launching AK Wong Made</h3>
+    <div class="card">
+      <div class="img" data-caption="Studio launch — akwongmade.com"></div>
+      <div class="body">
+        <p>Formally consolidated three years of freelance projects into a small studio brand: AI automation, small-business websites, web apps. This site is the first thing it ships.</p>
+        <a href="#" class="more">Read the fuller story &rarr;</a>
+      </div>
+    </div>
+  </article>
+
+  <article class="milestone">
+    <div class="year">— 2025</div>
+    <h3>Shaolin Hung Gar goes live</h3>
+    <div class="card">
+      <div class="img blue" data-caption="Site launch · shaolinhunggarkungfu.com"></div>
+      <div class="body">
+        <p>Built and shipped the marketing site for a Vancouver kung fu school and lion dance troupe. Free hosting, built-in CMS, forms that email the school directly. Became the reference case for the small-business website line.</p>
+        <a href="#" class="more">Case study &rarr;</a>
+      </div>
+    </div>
+  </article>
+
+  <article class="milestone">
+    <div class="year">— 2024</div>
+    <h3>First AI automation client</h3>
+    <div class="card">
+      <div class="img" data-caption="Invoice → receipt pipeline"></div>
+      <div class="body">
+        <p>Built an invoice-to-receipt automation for a small business — cut a 6-hour weekly task down to under 4 minutes. Convinced me this was a real line of work, not a side experiment.</p>
+        <a href="#" class="more">Read more &rarr;</a>
+      </div>
+    </div>
+  </article>
+
+  <!-- ERA: CORPORATE -->
+  <div class="era-break" id="era-corporate">
+    <div class="era-label">Era &mdash; 2016 to 2022</div>
+    <h2>Corporate Years</h2>
+    <div class="era-more"><a href="#">Read the full era &rarr;</a></div>
+  </div>
+
+  <article class="milestone">
+    <div class="year">— 2020</div>
+    <h3>Led my first cross-team project</h3>
+    <div class="card">
+      <div class="img" data-caption="Team offsite · 2020"></div>
+      <div class="body">
+        <p>Coordinated 8 engineers across 3 teams to ship a rebuild of a critical reporting pipeline. Learned that most engineering problems are actually communication problems.</p>
+        <a href="#" class="more">Read more &rarr;</a>
+      </div>
+    </div>
+  </article>
+
+  <article class="milestone">
+    <div class="year">— 2016</div>
+    <h3>First job in Vancouver</h3>
+    <div class="card">
+      <div class="img" data-caption="Downtown Vancouver · 2016"></div>
+      <div class="body">
+        <p>Started as a junior engineer at a fintech firm. Moved across the country, learned to cook properly, learned that "senior engineer" is mostly patience.</p>
+      </div>
+    </div>
+  </article>
+
+  <!-- ERA: UNIVERSITY -->
+  <div class="era-break" id="era-university">
+    <div class="era-label">Era &mdash; 2012 to 2016</div>
+    <h2>University</h2>
+    <div class="era-more"><a href="#">Read the full era &rarr;</a></div>
+  </div>
+
+  <article class="milestone">
+    <div class="year">— 2016</div>
+    <h3>Graduated — Computer Science</h3>
+    <div class="card">
+      <div class="img" data-caption="Convocation"></div>
+      <div class="body">
+        <p>Finished a B.Sc. in Computer Science. Thesis was on something I now barely remember. The most useful class turned out to be technical writing.</p>
+      </div>
+    </div>
+  </article>
+
+  <article class="milestone">
+    <div class="year">— 2014</div>
+    <h3>First freelance project</h3>
+    <div class="card">
+      <div class="img" data-caption="First invoice · $400"></div>
+      <div class="body">
+        <p>Built a small website for a family friend's business. Charged $400, spent two weekends, learned everything about scope creep. Kept a copy of the invoice.</p>
+        <a href="#" class="more">Read more &rarr;</a>
+      </div>
+    </div>
+  </article>
+
+  <!-- ERA: GROWING UP -->
+  <div class="era-break" id="era-early">
+    <div class="era-label">Era &mdash; 1994 to 2012</div>
+    <h2>Growing Up</h2>
+    <div class="era-more"><a href="#">Read the full era &rarr;</a></div>
+  </div>
+
+  <article class="milestone">
+    <div class="year">— 2008</div>
+    <h3>First computer, first line of code</h3>
+    <div class="card">
+      <div class="img" data-caption="Old family desktop"></div>
+      <div class="body">
+        <p>Got a hand-me-down family desktop. Discovered View Source. Spent an entire summer building a fan site for a video game and never looked back.</p>
+      </div>
+    </div>
+  </article>
+
+  <div class="birth">
+    <div class="year">— 1994</div>
+    <h2>Born.</h2>
+  </div>
+
+</div>
+
+<footer class="site">
+  <div class="wrap row">
+    <div>&copy; 2026 AK Wong Made &nbsp;·&nbsp; Made in Vancouver</div>
+    <div>
+      <a href="#">Email</a> &nbsp;·&nbsp;
+      <a href="#">GitHub</a> &nbsp;·&nbsp;
+      <a href="#">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
