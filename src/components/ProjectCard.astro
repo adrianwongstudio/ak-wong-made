@@ -1,0 +1,78 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { project: CollectionEntry<'projects'>; featured?: boolean; }
+const { project, featured = false } = Astro.props;
+const d = project.data;
+const href = d.hasCaseStudy ? `/work/${project.id.replace(/\.md$/, '')}/` : d.liveUrl!;
+const external = !d.hasCaseStudy;
+---
+<article class:list={['project', featured && 'is-featured']}>
+  <a href={href} rel={external ? 'noopener' : undefined} class="thumb-link">
+    <div class="thumb">
+      {featured && (
+        <div class="thumb-mark">
+          {d.title}
+          <span>{d.hasCaseStudy ? 'Case study →' : 'Live site →'}</span>
+        </div>
+      )}
+    </div>
+  </a>
+  <div class="tags">
+    {d.services.map(s => <span class="tag">{s}</span>)}
+    {d.stack.slice(0, 2).map(s => <span class="tag">{s}</span>)}
+  </div>
+  <h3><a href={href} rel={external ? 'noopener' : undefined}>{d.title}</a></h3>
+  <p>{d.client} &middot; {d.year}</p>
+</article>
+
+<style>
+  .project { display: flex; flex-direction: column; gap: 0.9rem; }
+  .thumb-link { display: block; border: none; }
+  .thumb {
+    aspect-ratio: 4/3;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    position: relative; overflow: hidden;
+  }
+  .thumb::after {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(45deg,
+        rgba(16,52,166,0.06) 0 8px, transparent 8px 16px);
+  }
+  .is-featured .thumb {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-ink) 100%);
+  }
+  .is-featured .thumb::after { display: none; }
+  .thumb-mark {
+    position: absolute; inset: auto 1.25rem 1.25rem 1.25rem;
+    color: var(--text-invert);
+    font: 800 1.4rem/1 var(--display);
+    letter-spacing: -0.02em;
+    display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+  }
+  .thumb-mark span {
+    font: 500 0.7rem/1 var(--mono);
+    color: var(--accent);
+    letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .tag {
+    font: 500 0.65rem/1 var(--mono);
+    color: var(--text-mute);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  h3 {
+    font: 700 1.2rem/1.2 var(--display);
+    color: var(--brand);
+    margin: 0; letter-spacing: -0.01em;
+  }
+  h3 a { color: inherit; border: none; }
+  h3 a:hover { color: var(--brand-ink); }
+  p { margin: 0; color: var(--text-mute); font-size: var(--step--1); line-height: 1.5; }
+</style>

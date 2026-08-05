@@ -1,17 +1,163 @@
 ---
+import Base from '../layouts/Base.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { services } from '../data/services';
+import { getCollection } from 'astro:content';
 
+const featured = (await getCollection('projects', p => p.data.featured))
+  .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
+  .slice(0, 3);
 ---
+<Base title="AK Wong Made — studio for AI automation, websites, and web apps" current="home">
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+  <section class="hero wrap">
+    <div class="mono-label">01 &mdash; A studio, quietly shipping</div>
+    <h1>AI automation, <em>websites,</em> and web apps for small businesses.</h1>
+    <p class="lead">
+      One-person studio. I help small teams cut manual work, launch clean marketing sites,
+      and build the internal tools they can't buy off the shelf.
+    </p>
+    <div class="ctas">
+      <a href="/contact/" class="btn btn-primary">Book a call &rarr;</a>
+      <a href="/work/" class="btn btn-outline">See the work</a>
+    </div>
+  </section>
+
+  <section class="services">
+    <div class="wrap">
+      <div class="mono-label">02 &mdash; Services</div>
+      <h2>Three lines of work. Sharpened over years of client engagements.</h2>
+      <div class="service-grid">
+        {services.map(s => <ServiceCard service={s} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="featured wrap">
+    <div class="head">
+      <div>
+        <div class="mono-label">03 &mdash; Featured work</div>
+        <h2>Selected projects.</h2>
+      </div>
+      <a href="/work/">See all &rarr;</a>
+    </div>
+    {featured.length > 0 && (
+      <div class="grid">
+        {featured.map((p, i) => <ProjectCard project={p} featured={i === 0} />)}
+      </div>
+    )}
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="mono-label" style="color: var(--accent);">A note from a client</div>
+      <p class="quote">Adrian took a mess of spreadsheets and turned it into a system I actually understand.</p>
+      <div class="attr"><span>&mdash;</span> Sifu Wong &nbsp;·&nbsp; Shaolin Hung Gar Kung Fu</div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap row">
+      <div>
+        <h2>Have something in mind?</h2>
+        <p class="sub">Book a 20-minute call. No pitch, no obligation.</p>
+      </div>
+      <a href="/contact/" class="btn btn-coral">Book a call &rarr;</a>
+    </div>
+  </section>
+
+</Base>
+
+<style>
+  .hero { padding: calc(var(--stack) * 1.1) 0 var(--stack); }
+  .hero h1 {
+    font: 800 var(--step-3)/0.98 var(--display);
+    color: var(--brand);
+    letter-spacing: -0.025em;
+    margin: 0 0 1.5rem; max-width: 15ch;
+  }
+  .hero h1 em { font-style: normal; color: var(--text); }
+  .hero .lead {
+    font-size: var(--step-1); max-width: 42ch;
+    line-height: 1.45; margin: 0 0 2.5rem;
+  }
+  .hero .ctas { display: flex; gap: 0.9rem; flex-wrap: wrap; }
+
+  .services {
+    padding: var(--stack) 0;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .services h2 {
+    font: 700 var(--step-2)/1.05 var(--display);
+    color: var(--brand);
+    letter-spacing: -0.02em;
+    margin: 0 0 3rem; max-width: 22ch;
+  }
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  @media (max-width: 820px) { .service-grid { grid-template-columns: 1fr; } }
+
+  .featured { padding: var(--stack) 0; }
+  .featured .head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 2rem; margin-bottom: 2.5rem;
+  }
+  .featured h2 {
+    font: 700 var(--step-2)/1.05 var(--display);
+    color: var(--text);
+    letter-spacing: -0.02em; margin: 0;
+  }
+  .featured .grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+  }
+  @media (max-width: 820px) { .featured .grid { grid-template-columns: 1fr; } }
+
+  .band {
+    background: var(--brand); color: var(--text-invert);
+    padding: calc(var(--stack) * 1.1) 0;
+    position: relative;
+  }
+  .band::before {
+    content: ""; position: absolute; top: 0;
+    left: var(--gutter); right: var(--gutter);
+    height: 1px; background: var(--accent); opacity: 0.6;
+  }
+  .band .quote {
+    font: 500 var(--step-2)/1.2 var(--display);
+    letter-spacing: -0.015em;
+    max-width: 26ch; margin: 0 0 2rem;
+  }
+  .band .quote::before {
+    content: "\201C"; color: var(--accent);
+    font-size: 1.4em; line-height: 0; margin-right: 0.2em;
+  }
+  .band .attr {
+    font: 500 var(--step--1)/1 var(--mono);
+    color: var(--text-invert); opacity: 0.75;
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .band .attr span { color: var(--accent); }
+
+  .cta {
+    background: var(--text); color: var(--text-invert);
+    padding: calc(var(--stack) * 0.9) 0;
+  }
+  .cta .row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 2rem; flex-wrap: wrap;
+  }
+  .cta h2 {
+    font: 700 var(--step-2)/1.05 var(--display);
+    color: var(--text-invert);
+    letter-spacing: -0.02em; margin: 0; max-width: 20ch;
+  }
+  .cta .sub {
+    color: var(--line); margin: 0.5rem 0 0; font-size: var(--step-0);
+  }
+</style>

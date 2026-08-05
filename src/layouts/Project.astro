@@ -1,0 +1,55 @@
+---
+import Base from './Base.astro';
+import type { CollectionEntry } from 'astro:content';
+interface Props { project: CollectionEntry<'projects'>; }
+const { project } = Astro.props;
+const d = project.data;
+---
+<Base title={`${d.title} — AK Wong Made`} description={`${d.client} · ${d.year}`} current="work">
+  <article class="case wrap wrap--narrow">
+    <div class="mono-label">Case study &mdash; {d.year}</div>
+    <h1>{d.title}</h1>
+    <div class="meta">
+      <div><span>Client</span>{d.client}</div>
+      <div><span>Stack</span>{d.stack.join(', ')}</div>
+      <div><span>Services</span>{d.services.join(', ')}</div>
+      {d.liveUrl && <div><span>Live</span><a href={d.liveUrl} rel="noopener">{new URL(d.liveUrl).host}</a></div>}
+    </div>
+    <div class="prose"><slot /></div>
+    <p style="margin-top: var(--stack);"><a href="/work/">&larr; All projects</a></p>
+  </article>
+</Base>
+
+<style>
+  .case { padding: calc(var(--stack) * 0.9) 0 var(--stack); }
+  h1 {
+    font: 800 var(--step-3)/1 var(--display);
+    color: var(--brand);
+    letter-spacing: -0.025em;
+    margin: 0 0 2rem; max-width: 20ch;
+  }
+  .meta {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 1rem 2rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin: 0 0 var(--stack);
+    font-size: var(--step--1);
+  }
+  .meta span {
+    display: block;
+    font: 500 0.7rem/1 var(--mono);
+    color: var(--accent);
+    letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  .prose :global(h2) {
+    font: 700 var(--step-2)/1.1 var(--display);
+    color: var(--brand);
+    margin: 2.5rem 0 0.8rem;
+  }
+  .prose :global(p) { line-height: 1.7; margin: 0 0 1rem; }
+  .prose :global(ul) { line-height: 1.7; padding-left: 1.2rem; }
+  .prose :global(ul li) { margin-bottom: 0.3rem; }
+</style>

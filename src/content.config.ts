@@ -1,0 +1,46 @@
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+const projects = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    year: z.number(),
+    client: z.string(),
+    services: z.array(z.enum(['AI Automation', 'Website', 'Web App'])),
+    stack: z.array(z.string()),
+    liveUrl: z.string().url().optional(),
+    repoUrl: z.string().url().optional(),
+    thumb: image().optional(),
+    featured: z.boolean().default(false),
+    hasCaseStudy: z.boolean().default(false),
+    order: z.number().default(0),
+  }),
+});
+
+const posts = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/posts' }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    date: z.date(),
+    tags: z.array(z.string()).default([]),
+    description: z.string(),
+    hero: image().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+const life = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/life' }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    year: z.number(),
+    era: z.enum(['Studio Life', 'Corporate Years', 'University', 'Growing Up']),
+    type: z.enum(['milestone', 'era-marker', 'birth']).default('milestone'),
+    image: image().optional(),
+    featured: z.boolean().default(false),
+    order: z.number().default(0),
+  }),
+});
+
+export const collections = { projects, posts, life };

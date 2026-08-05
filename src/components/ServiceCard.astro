@@ -1,0 +1,40 @@
+---
+import type { Service } from '../data/services';
+interface Props { service: Service }
+const { service } = Astro.props;
+---
+<article class="service">
+  <div class="num">{service.num}</div>
+  <h3>{service.title}</h3>
+  <p>{service.body}</p>
+  <div class="outcome">{service.recently}</div>
+</article>
+
+<style>
+  .service {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    padding: 2rem 1.75rem 2.25rem;
+    border-radius: var(--radius);
+    display: flex; flex-direction: column; gap: 0.9rem;
+  }
+  .num {
+    font: 500 0.75rem/1 var(--mono);
+    color: var(--accent);
+    letter-spacing: 0.15em;
+  }
+  h3 {
+    font: 700 1.35rem/1.15 var(--display);
+    color: var(--brand);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  p { margin: 0; line-height: 1.55; }
+  .outcome {
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--line);
+    color: var(--text-mute);
+    font-size: var(--step--1);
+  }
+</style>
