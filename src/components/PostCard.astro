@@ -1,0 +1,43 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { post: CollectionEntry<'posts'>; }
+const { post } = Astro.props;
+const d = post.data;
+const slug = post.id.replace(/\.md$/, '');
+const dateStr = d.date.toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+<article class="post-card">
+  <div class="meta">
+    <time datetime={d.date.toISOString()}>{dateStr}</time>
+    {d.tags.length > 0 && <span class="dot">·</span>}
+    {d.tags.map(t => <a href={`/blog/tag/${t}/`} class="tag">{t}</a>)}
+  </div>
+  <h3><a href={`/blog/${slug}/`}>{d.title}</a></h3>
+  <p>{d.description}</p>
+</article>
+
+<style>
+  .post-card {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .post-card:last-child { border-bottom: none; }
+  .meta {
+    display: flex; align-items: center; gap: 0.5rem;
+    font: 500 0.7rem/1 var(--mono);
+    color: var(--accent);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .meta .dot { color: var(--text-mute); }
+  .tag { color: var(--accent); border: none; }
+  h3 {
+    font: 700 1.4rem/1.2 var(--display);
+    color: var(--brand);
+    letter-spacing: -0.01em;
+    margin: 0 0 0.5rem;
+  }
+  h3 a { color: inherit; border: none; }
+  h3 a:hover { color: var(--brand-ink); }
+  p { color: var(--text); margin: 0; }
+</style>

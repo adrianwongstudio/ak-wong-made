@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#F5F0E6"/>
+  <rect x="40" y="40" width="720" height="520" fill="none" stroke="#E63946" stroke-width="1.5"/>
+  <text x="400" y="290" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="22" fill="#1034A6" letter-spacing="4">LEGACY FINANCIAL</text>
+  <text x="400" y="330" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#6B6B6B" letter-spacing="4">PLANNING TOOL</text>
+</svg>

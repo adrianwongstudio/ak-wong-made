@@ -1,0 +1,40 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PostCard from '../../../components/PostCard.astro';
+import Pagination from '../../../components/Pagination.astro';
+import TagCloud from '../../../components/TagCloud.astro';
+import { getCollection } from 'astro:content';
+import { paginate } from '../../../lib/paginate';
+
+export async function getStaticPaths() {
+  const PER_PAGE = 6;
+  const all = (await getCollection('posts', p => !p.data.draft))
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  const totalPages = Math.max(1, Math.ceil(all.length / PER_PAGE));
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => ({
+    params: { page: String(i + 2) },
+    props: { pageNum: i + 2, all, perPage: PER_PAGE },
+  }));
+}
+const { pageNum, all, perPage } = Astro.props;
+const page = paginate(all, perPage, pageNum);
+---
+<Base title={`Blog — page ${pageNum} — AK Wong Made`} current="blog">
+  <section class="wrap" style="padding: calc(var(--stack) * 0.9) 0 var(--stack);">
+    <div class="mono-label">Blog &mdash; page {pageNum}</div>
+    <h1>Notes, essays, work-in-progress.</h1>
+    <div class="layout">
+      <div class="posts">
+        {page.items.map(p => <PostCard post={p} />)}
+        <Pagination current={page.current} total={page.total} baseUrl="/blog" />
+      </div>
+      <TagCloud />
+    </div>
+  </section>
+</Base>
+
+<style>
+  h1 { font: 700 var(--step-2)/1.05 var(--display); color: var(--text); letter-spacing: -0.02em; margin: 0 0 2rem; }
+  .layout { display: grid; grid-template-columns: 1fr 240px; gap: 3rem; }
+  @media (max-width: 820px) { .layout { grid-template-columns: 1fr; } }
+</style>

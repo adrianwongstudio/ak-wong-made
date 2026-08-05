@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import FilterChips from '../components/FilterChips.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import Lightbox from '../components/Lightbox.astro';
+import { filterByType } from '../lib/filter';
+import { gallery } from '../data/gallery';
+
+const type = Astro.url.searchParams.get('type');
+const typeMap: Record<string, string> = {
+  'AI Automation': 'AI Automation',
+  'Websites': 'Website',
+  'Web Apps': 'Web App',
+};
+const mapped = type ? typeMap[type] ?? type : null;
+const items = filterByType(gallery, g => g.services, mapped);
+---
+<Base title="Gallery — AK Wong Made" current="gallery">
+  <section class="wrap" style="padding: calc(var(--stack) * 0.9) 0 var(--stack);">
+    <div class="mono-label">Gallery</div>
+    <h1>Screenshots from the studio.</h1>
+    <FilterChips options={['All', 'AI Automation', 'Websites', 'Web Apps']} />
+    <GalleryGrid items={items} />
+  </section>
+  <Lightbox />
+</Base>
+
+<style>
+  h1 { font: 700 var(--step-2)/1.05 var(--display); color: var(--text); letter-spacing: -0.02em; margin: 0 0 2rem; }
+</style>

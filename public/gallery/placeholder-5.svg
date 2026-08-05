@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#0B2478"/>
+  <rect x="40" y="40" width="720" height="520" fill="none" stroke="#F5F0E6" stroke-width="1.5"/>
+  <text x="400" y="290" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="22" fill="#F5F0E6" letter-spacing="4">BOOKING FORM</text>
+  <text x="400" y="330" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="#D4A017" letter-spacing="4">FLOW</text>
+</svg>

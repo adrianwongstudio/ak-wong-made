@@ -1,0 +1,36 @@
+---
+interface Props {
+  current: number;
+  total: number;
+  baseUrl: string;
+}
+const { current, total, baseUrl } = Astro.props;
+const href = (n: number) => n === 1 ? `${baseUrl}/` : `${baseUrl}/page/${n}/`;
+const prev = current > 1 ? current - 1 : null;
+const next = current < total ? current + 1 : null;
+---
+{total > 1 && (
+  <nav class="pagination" aria-label="Pagination">
+    <a href={prev ? href(prev) : '#'} aria-disabled={!prev} class:list={[!prev && 'disabled']}>&larr; Prev</a>
+    <span class="count">Page {current} of {total}</span>
+    <a href={next ? href(next) : '#'} aria-disabled={!next} class:list={[!next && 'disabled']}>Next &rarr;</a>
+  </nav>
+)}
+
+<style>
+  .pagination {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem;
+    padding: 2rem 0 0;
+    margin-top: 2rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--step--1);
+  }
+  .pagination a { color: var(--brand); }
+  .pagination a.disabled { color: var(--text-mute); pointer-events: none; border-color: transparent; }
+  .count {
+    font: 500 0.7rem/1 var(--mono);
+    color: var(--text-mute);
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+</style>

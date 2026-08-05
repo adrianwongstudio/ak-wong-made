@@ -1,0 +1,50 @@
+---
+---
+<dialog id="lightbox" class="lightbox">
+  <button class="close" aria-label="Close" data-close>&times;</button>
+  <img id="lightbox-img" alt="" />
+  <p id="lightbox-caption" class="caption"></p>
+</dialog>
+
+<script>
+  const dlg = document.getElementById('lightbox') as HTMLDialogElement;
+  const img = document.getElementById('lightbox-img') as HTMLImageElement;
+  const cap = document.getElementById('lightbox-caption')!;
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const trigger = t.closest('[data-lightbox]') as HTMLAnchorElement | null;
+    if (trigger) {
+      e.preventDefault();
+      img.src = trigger.dataset.src ?? trigger.href;
+      img.alt = trigger.dataset.alt ?? '';
+      cap.textContent = trigger.dataset.caption ?? '';
+      dlg.showModal();
+      return;
+    }
+    if (t.matches('[data-close]') || t === dlg) dlg.close();
+  });
+</script>
+
+<style>
+  .lightbox {
+    border: none; padding: 0;
+    background: transparent; color: var(--text-invert);
+    max-width: 90vw; max-height: 90vh;
+  }
+  .lightbox::backdrop {
+    background: rgba(11, 36, 120, 0.92);
+    backdrop-filter: blur(4px);
+  }
+  .lightbox img { max-width: 90vw; max-height: 80vh; border-radius: var(--radius); }
+  .close {
+    position: absolute; top: -3rem; right: 0;
+    background: transparent; border: none;
+    color: var(--text-invert); font-size: 2rem; cursor: pointer;
+  }
+  .caption {
+    text-align: center; margin: 0.75rem 0 0;
+    font: 500 0.75rem/1 var(--mono);
+    color: var(--accent);
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+</style>
