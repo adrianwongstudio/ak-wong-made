@@ -47,6 +47,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <Footer />
     {import.meta.env.PROD && (
       <script
+        is:inline
         defer
         src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "REPLACE_WITH_CF_ANALYTICS_TOKEN"}'
