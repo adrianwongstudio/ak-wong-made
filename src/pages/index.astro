@@ -12,7 +12,7 @@ const featured = (await getCollection('projects', p => p.data.featured))
 <Base title="AK Wong Made — studio for AI automation, websites, and web apps" current="home">
 
   <section class="hero wrap">
-    <div class="mono-label">01 &mdash; A studio, quietly shipping</div>
+    <div class="mono-label">A studio, quietly shipping</div>
     <h1>AI automation, <em>websites,</em> and web apps for small businesses.</h1>
     <p class="lead">
       One-person studio. I help small teams cut manual work, launch clean marketing sites,
@@ -26,7 +26,7 @@ const featured = (await getCollection('projects', p => p.data.featured))
 
   <section class="services">
     <div class="wrap">
-      <div class="mono-label">02 &mdash; Services</div>
+      <div class="mono-label">Services</div>
       <h2>Three lines of work. Sharpened over years of client engagements.</h2>
       <div class="service-grid">
         {services.map(s => <ServiceCard service={s} />)}
@@ -37,7 +37,7 @@ const featured = (await getCollection('projects', p => p.data.featured))
   <section class="featured wrap">
     <div class="head">
       <div>
-        <div class="mono-label">03 &mdash; Featured work</div>
+        <div class="mono-label">Featured work</div>
         <h2>Selected projects.</h2>
       </div>
       <a href="/work/">See all &rarr;</a>
