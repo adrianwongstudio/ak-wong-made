@@ -2,8 +2,8 @@
   /* Palette */
   --egyptian:       #1034A6;
   --egyptian-ink:   #0B2478;
-  --ochre:          #B8860B;
-  --ochre-ink:      #8F6809;
+  --gold:           #D4A017;
+  --gold-ink:       #A87F12;
   --coral:          #E63946;
   --coral-ink:      #C42A38;
   --ivory:          #F5F0E6;
@@ -20,7 +20,7 @@
   --brand:       var(--egyptian);
   --brand-ink:   var(--egyptian-ink);
   --accent:      var(--coral);
-  --emphasis:    var(--ochre);
+  --emphasis:    var(--gold);
   --line:        var(--rule);
   --bg-invert:   var(--egyptian);
   --text-invert: var(--ivory);

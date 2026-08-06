@@ -61,7 +61,7 @@ a:hover { color: var(--brand-ink); }
 }
 .btn-outline:hover { background: var(--text); color: var(--bg); }
 .btn-emphasis { background: var(--emphasis); color: var(--text); }
-.btn-emphasis:hover { background: var(--ochre-ink); color: var(--text-invert); }
+.btn-emphasis:hover { background: var(--gold-ink); color: var(--text-invert); }
 
 /* In-prose links get underlines, no border-bottom */
 .prose a { text-decoration: underline; border: none; }
