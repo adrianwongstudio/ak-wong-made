@@ -21,7 +21,7 @@ const items = [
       {items.map(i => (
         <a href={i.href} class={current === i.key ? 'current' : ''}>{i.label}</a>
       ))}
-      <a href="/contact/" class="btn btn-coral">Contact &rarr;</a>
+      <a href="/contact/" class="btn btn-emphasis">Contact &rarr;</a>
     </nav>
   </div>
 </header>
@@ -68,7 +68,7 @@ const items = [
     border-bottom: 1.5px solid var(--brand);
     color: var(--brand);
   }
-  nav.site .btn-coral { padding: 0.55rem 0.95rem; }
+  nav.site .btn-emphasis { padding: 0.55rem 0.95rem; }
   @media (max-width: 640px) {
     nav.site { gap: 1rem; }
     nav.site a:not(.btn) { display: none; }
