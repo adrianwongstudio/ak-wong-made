@@ -22,6 +22,17 @@
 6. Redirect Rules: `akwongmade.com/*` → `https://www.akwongmade.com/$1` (301).
 7. Web Analytics → Add site → `www.akwongmade.com` → copy token → replace in `Base.astro`, commit, push.
 
+## CMS (Pages CMS)
+
+Editing surface is [pagescms.org](https://pagescms.org) — a hosted, Git-based CMS that commits directly to this repo. No self-hosting, no OAuth proxy, no database.
+
+1. Sign in at [app.pagescms.org](https://app.pagescms.org) with your GitHub account.
+2. Grant access to the `ak-wong-made` repo.
+3. Pages CMS reads `.pages.yml` at the repo root and shows editable collections for **Work**, **Blog posts**, and **Life timeline**.
+4. Every save commits to `main`; Cloudflare Pages rebuilds within ~90 seconds.
+
+The `.pages.yml` config only exposes the frequently-edited content collections. TypeScript data files (`src/data/services.ts`, `tools.ts`, `gallery.ts`, `eras.ts`) stay code-only since they change rarely.
+
 ## Local commands
 
 ```bash
