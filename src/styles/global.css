@@ -1,7 +1,13 @@
 @import './tokens.css';
 
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* Scale the entire site up ~15% — every rem-based size (fonts, spacing,
+     gaps, padding) grows proportionally. Users who override their browser
+     default font size still stack on top of this. */
+  font-size: 115%;
+}
 body {
   margin: 0;
   background: var(--bg);
