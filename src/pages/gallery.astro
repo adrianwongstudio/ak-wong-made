@@ -1,30 +1,98 @@
 ---
 import Base from '../layouts/Base.astro';
 import FilterChips from '../components/FilterChips.astro';
-import GalleryGrid from '../components/GalleryGrid.astro';
 import Lightbox from '../components/Lightbox.astro';
-import { filterByType } from '../lib/filter';
 import { gallery } from '../data/gallery';
 
-const type = Astro.url.searchParams.get('type');
-const typeMap: Record<string, string> = {
-  'Automation': 'Automation',
-  'Websites': 'Website',
-  'Web Apps': 'Web App',
-};
-const mapped = type ? typeMap[type] ?? type : null;
-const items = filterByType(gallery, g => g.services, mapped);
+// Derive chips from actual gallery data.
+const uniqueServices = [...new Set(gallery.flatMap(g => g.services))].sort();
+const filterOptions = ['All', ...uniqueServices];
 ---
 <Base title="Gallery — AK Wong Made" current="gallery">
   <section class="wrap" style="padding: calc(var(--stack) * 0.9) 0 var(--stack);">
     <div class="mono-label">Gallery</div>
     <h1>Screenshots from the studio.</h1>
-    <FilterChips options={['All', 'Automation', 'Websites', 'Web Apps']} />
-    <GalleryGrid items={items} />
+    <FilterChips options={filterOptions} />
+    <div class="grid">
+      {gallery.map(it => (
+        <a
+          href={it.src}
+          class="tile"
+          data-lightbox
+          data-src={it.src}
+          data-alt={it.alt}
+          data-caption={it.caption}
+          data-gallery-services={it.services.join('|')}
+        >
+          <img src={it.src} alt={it.alt} loading="lazy" />
+          <span class="tag">{it.services.join(' · ')}</span>
+        </a>
+      ))}
+    </div>
+    <p class="empty" hidden>No images match that filter yet.</p>
   </section>
   <Lightbox />
+
+  <script is:inline>
+    (function () {
+      function apply() {
+        const type = new URLSearchParams(location.search).get('type');
+        document.querySelectorAll('.chips .chip').forEach((chip) => {
+          try {
+            const chipType = new URL(chip.href, location.origin).searchParams.get('type');
+            const isActive = (!type && !chipType) || chipType === type;
+            chip.classList.toggle('active', isActive);
+          } catch (_) {}
+        });
+        let visible = 0;
+        document.querySelectorAll('[data-gallery-services]').forEach((tile) => {
+          const services = (tile.getAttribute('data-gallery-services') || '').split('|');
+          const show = !type || services.includes(type);
+          tile.hidden = !show;
+          if (show) visible++;
+        });
+        const empty = document.querySelector('.empty');
+        if (empty) empty.hidden = visible > 0;
+      }
+      apply();
+      document.querySelectorAll('.chips .chip').forEach((chip) => {
+        chip.addEventListener('click', (e) => {
+          try {
+            const url = new URL(chip.href, location.origin);
+            if (url.pathname !== location.pathname) return;
+            e.preventDefault();
+            history.pushState({}, '', url.pathname + url.search);
+            apply();
+          } catch (_) {}
+        });
+      });
+      window.addEventListener('popstate', apply);
+    })();
+  </script>
 </Base>
 
 <style>
   h1 { font: 700 var(--step-2)/1.05 var(--display); color: var(--text); letter-spacing: -0.02em; margin: 0 0 2rem; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  @media (max-width: 820px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 500px) { .grid { grid-template-columns: 1fr; } }
+  .tile {
+    position: relative; display: block;
+    border: 1px solid var(--line);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .tile img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+  .tag {
+    position: absolute; left: 0.75rem; bottom: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    font: 500 0.65rem/1 var(--mono);
+    color: var(--text-invert);
+    background: rgba(11, 36, 120, 0.85);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    border-radius: var(--radius-sm);
+  }
 </style>

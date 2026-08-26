@@ -8,7 +8,10 @@ const href = d.hasCaseStudy ? `/work/${slug}/` : d.liveUrl!;
 const external = !d.hasCaseStudy;
 const reversed = index % 2 === 1;
 ---
-<article class:list={['row', reversed && 'reversed']}>
+<article
+  class:list={['row', reversed && 'reversed']}
+  data-project-services={d.services.join('|')}
+>
   <a href={href} rel={external ? 'noopener' : undefined} class="image-link">
     {d.thumb ? (
       <div class="image image--photo">

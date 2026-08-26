@@ -2,30 +2,77 @@
 import Base from '../../layouts/Base.astro';
 import ProjectRow from '../../components/ProjectRow.astro';
 import FilterChips from '../../components/FilterChips.astro';
-import { filterByType } from '../../lib/filter';
 import { getCollection } from 'astro:content';
 
 const allProjects = (await getCollection('projects'))
   .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
-// Derive chips from actual project data — new services added via the CMS
-// automatically show up as filters here without a code change.
+// Derive chips from actual project data — new services in the CMS
+// automatically show up as filters without a code change.
 const uniqueServices = [...new Set(allProjects.flatMap(p => p.data.services))].sort();
 const filterOptions = ['All', ...uniqueServices];
-
-const type = Astro.url.searchParams.get('type');
-const projects = filterByType(allProjects, p => p.data.services, type);
 ---
 <Base title="Work — AK Wong Made" current="work">
   <section class="wrap" style="padding: calc(var(--stack) * 0.9) 0 var(--stack);">
     <div class="mono-label">Work</div>
     <h1>Selected projects.</h1>
     <FilterChips options={filterOptions} />
-    <div class="rows">
-      {projects.map((p, i) => <ProjectRow project={p} index={i} />)}
+    <div class="rows" id="work-rows">
+      {allProjects.map((p, i) => <ProjectRow project={p} index={i} />)}
     </div>
-    {projects.length === 0 && <p>No projects match that filter yet.</p>}
+    <p class="empty" hidden>No projects match that filter yet.</p>
   </section>
+
+  <script is:inline>
+    // Static-site filter: rows are already in the DOM, we just toggle
+    // visibility based on the ?type= query string.
+    (function () {
+      function apply() {
+        const type = new URLSearchParams(location.search).get('type');
+
+        // Chip active state
+        document.querySelectorAll('.chips .chip').forEach((chip) => {
+          try {
+            const chipType = new URL(chip.href, location.origin).searchParams.get('type');
+            const isActive = (!type && !chipType) || chipType === type;
+            chip.classList.toggle('active', isActive);
+          } catch (_) { /* ignore malformed hrefs */ }
+        });
+
+        // Filter rows, re-alternate visible index for image-left/right
+        const rows = document.querySelectorAll('[data-project-services]');
+        let visibleIdx = 0;
+        rows.forEach((row) => {
+          const services = (row.getAttribute('data-project-services') || '').split('|');
+          const show = !type || services.includes(type);
+          row.hidden = !show;
+          if (show) {
+            row.classList.toggle('reversed', visibleIdx % 2 === 1);
+            visibleIdx++;
+          }
+        });
+
+        const empty = document.querySelector('.empty');
+        if (empty) empty.hidden = visibleIdx > 0;
+      }
+      apply();
+      // If user clicks a chip that lives on this same page, catch it and
+      // re-apply without a full reload. Falls back to normal navigation
+      // if pushState isn't supported.
+      document.querySelectorAll('.chips .chip').forEach((chip) => {
+        chip.addEventListener('click', (e) => {
+          try {
+            const url = new URL(chip.href, location.origin);
+            if (url.pathname !== location.pathname) return; // let full nav happen
+            e.preventDefault();
+            history.pushState({}, '', url.pathname + url.search);
+            apply();
+          } catch (_) { /* fall through to default nav */ }
+        });
+      });
+      window.addEventListener('popstate', apply);
+    })();
+  </script>
 </Base>
 
 <style>
