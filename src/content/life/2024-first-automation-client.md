@@ -1,5 +1,5 @@
 ---
-title: First AI automation client
+title: First automation client
 year: 2024
 era: Studio Life
 type: milestone

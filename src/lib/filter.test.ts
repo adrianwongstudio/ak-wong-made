@@ -3,9 +3,9 @@ import { filterByType } from './filter';
 
 type P = { title: string; services: string[] };
 const items: P[] = [
-  { title: 'A', services: ['AI Automation'] },
+  { title: 'A', services: ['Automation'] },
   { title: 'B', services: ['Website'] },
-  { title: 'C', services: ['Website', 'AI Automation'] },
+  { title: 'C', services: ['Website', 'Automation'] },
 ];
 
 describe('filterByType', () => {
@@ -13,7 +13,7 @@ describe('filterByType', () => {
     expect(filterByType(items, i => i.services, null)).toHaveLength(3);
   });
   it('returns items whose key array includes the type', () => {
-    const r = filterByType(items, i => i.services, 'AI Automation');
+    const r = filterByType(items, i => i.services, 'Automation');
     expect(r.map(i => i.title)).toEqual(['A', 'C']);
   });
   it('returns empty when nothing matches', () => {

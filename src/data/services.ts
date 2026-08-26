@@ -6,7 +6,7 @@ export type Service = {
 
 export const services: Service[] = [
   {
-    title: 'AI Automation',
+    title: 'Automation',
     body: "Custom agents and pipelines that remove repetitive work — invoicing, triage, reporting, research. Wired into the tools you already use.",
     recently: 'Recently: cut a 6-hour invoicing loop to under 4 minutes.',
   },

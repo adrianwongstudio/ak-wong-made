@@ -9,11 +9,11 @@ const featured = (await getCollection('projects', p => p.data.featured))
   .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))
   .slice(0, 3);
 ---
-<Base title="AK Wong Made — studio for AI automation, websites, and web apps" current="home">
+<Base title="AK Wong Made — studio for automation, websites, and web apps" current="home">
 
   <section class="hero wrap">
     <div class="mono-label">A studio, quietly shipping</div>
-    <h1>AI automation, <em>websites,</em> and web apps for small businesses.</h1>
+    <h1>Automation, <em>websites,</em> and web apps for small businesses.</h1>
     <p class="lead">
       One-person studio. I help small teams cut manual work, launch clean marketing sites,
       and build the internal tools they can't buy off the shelf.

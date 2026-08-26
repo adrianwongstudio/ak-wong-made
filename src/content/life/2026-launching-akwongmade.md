@@ -8,5 +8,5 @@ order: 1
 ---
 
 Formally consolidated three years of freelance projects into a small
-studio brand: AI automation, small-business websites, web apps. This
+studio brand: automation, small-business websites, web apps. This
 site is the first thing it ships.

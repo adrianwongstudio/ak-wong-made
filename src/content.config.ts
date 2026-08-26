@@ -7,7 +7,7 @@ const projects = defineCollection({
     title: z.string(),
     year: z.number(),
     client: z.string(),
-    services: z.array(z.enum(['AI Automation', 'Website', 'Web App'])),
+    services: z.array(z.enum(['Automation', 'Website', 'Web App'])),
     stack: z.array(z.string()),
     liveUrl: z.string().url().optional(),
     repoUrl: z.string().url().optional(),
