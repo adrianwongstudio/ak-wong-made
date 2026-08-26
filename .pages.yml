@@ -6,6 +6,7 @@
 media:
   input: public
   output: /
+  extensions: [jpg, jpeg, png, gif, webp, svg, avif]
 
 content:
   # ─── Projects (case studies) ─────────────────────────────
@@ -14,6 +15,7 @@ content:
     path: src/content/projects
     type: collection
     format: yaml-frontmatter
+    extension: md
     filename: '{fields.title|slugify}.md'
     view:
       fields: [title, year, client, featured, hasCaseStudy]
@@ -43,21 +45,21 @@ content:
       - name: sections
         label: Case study sections
         type: object
-        list: true
+        list:
+          summary: '{fields.title}'
         required: true
-        description: "Each section has a title and one or more image+text blocks. Blocks inside a section alternate image-left / image-right."
         fields:
-          - { name: title, label: Section title, type: string, description: "e.g. 'The problem', 'The approach', 'What was built', 'Outcome'." }
+          - { name: title, label: Section title, type: string, description: "Section heading, e.g. 'The problem', 'The approach', 'What was built', 'Outcome'." }
           - name: blocks
             label: Blocks
             type: object
-            list: true
+            list:
+              summary: '{fields.caption}'
             required: true
-            description: "Add as many image+text pairs as you like. First block is image-left, second is image-right, third is image-left again, etc."
             fields:
-              - { name: image,   label: Image,         type: image,     description: "Optional. Leave empty for a text-only block (fills full width)." }
-              - { name: caption, label: Image caption, type: string,    description: "Optional. Short line shown under the image." }
-              - { name: body,    label: Text,          type: rich-text, required: true, description: "Block body. Supports markdown — bold, italic, lists, links." }
+              - { name: image,   label: Image,         type: image }
+              - { name: caption, label: Image caption, type: string }
+              - { name: body,    label: Text,          type: rich-text, required: true }
 
   # ─── Blog posts ──────────────────────────────────────────
   - name: posts
@@ -65,6 +67,7 @@ content:
     path: src/content/posts
     type: collection
     format: yaml-frontmatter
+    extension: md
     filename: '{fields.title|slugify}.md'
     view:
       fields: [title, date, tags, draft]
@@ -88,6 +91,7 @@ content:
     path: src/content/life
     type: collection
     format: yaml-frontmatter
+    extension: md
     filename: '{fields.year}-{fields.title|slugify}.md'
     view:
       fields: [title, year, era, type, featured]
