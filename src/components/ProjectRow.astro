@@ -40,22 +40,28 @@ const reversed = index % 2 === 1;
 <style>
   .row {
     display: grid;
-    grid-template-columns: 1.05fr 1fr;
+    grid-template-columns: 1.25fr 1fr;
     gap: 3.5rem;
-    align-items: center;
+    align-items: stretch;
     margin-bottom: calc(var(--stack) * 0.9);
   }
   .row.reversed .image-link { grid-column: 2; grid-row: 1; }
   .row.reversed .text { grid-column: 1; grid-row: 1; }
+  .text { display: flex; flex-direction: column; justify-content: center; }
   @media (max-width: 820px) {
     .row { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: var(--stack); }
     .row.reversed .image-link,
     .row.reversed .text { grid-column: 1; grid-row: auto; }
   }
 
-  .image-link { display: block; border: none; }
+  .image-link {
+    display: block;
+    border: none;
+    height: 100%;
+  }
   .image {
-    aspect-ratio: 16/10;
+    height: 100%;
+    min-height: 22rem;
     border-radius: var(--radius);
     position: relative; overflow: hidden;
     transition: transform .2s ease;
@@ -66,6 +72,9 @@ const reversed = index % 2 === 1;
     width: 100%; height: 100%;
     object-fit: cover;
     display: block;
+  }
+  @media (max-width: 820px) {
+    .image { aspect-ratio: 16/10; height: auto; min-height: 0; }
   }
   .image--placeholder {
     background: linear-gradient(135deg, var(--brand) 0%, var(--brand-ink) 100%);
