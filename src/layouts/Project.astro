@@ -24,24 +24,37 @@ const renderMd = (s: string) => marked.parse(s) as string;
     </div>
 
     <div class="wrap sections">
-      {d.sections.map(section => (
-        <section class="chapter">
-          {section.title && <h2 class="chapter-title">{section.title}</h2>}
-          {section.blocks.map((b, i) => (
-            <div class:list={['row', i % 2 === 1 && 'reversed', !b.image && 'no-image']}>
-              {b.image && (
-                <div class="image-side">
-                  <img src={b.image} alt={section.title ?? d.title} loading="lazy" />
-                  {b.caption && <p class="cap">{b.caption}</p>}
+      {(() => {
+        // Group the flat blocks list into chapters. Whenever a block has a
+        // chapterTitle, a new chapter starts and includes all subsequent
+        // blocks until the next chapterTitle.
+        const chapters: { title?: string; blocks: typeof d.blocks }[] = [];
+        for (const b of d.blocks) {
+          if (b.chapterTitle || chapters.length === 0) {
+            chapters.push({ title: b.chapterTitle, blocks: [b] });
+          } else {
+            chapters[chapters.length - 1].blocks.push(b);
+          }
+        }
+        return chapters.map(chapter => (
+          <section class="chapter">
+            {chapter.title && <h2 class="chapter-title">{chapter.title}</h2>}
+            {chapter.blocks.map((b, i) => (
+              <div class:list={['row', i % 2 === 1 && 'reversed', !b.image && 'no-image']}>
+                {b.image && (
+                  <div class="image-side">
+                    <img src={b.image} alt={chapter.title ?? d.title} loading="lazy" />
+                    {b.caption && <p class="cap">{b.caption}</p>}
+                  </div>
+                )}
+                <div class="text-side">
+                  <div class="prose" set:html={renderMd(b.body)}></div>
                 </div>
-              )}
-              <div class="text-side">
-                <div class="prose" set:html={renderMd(b.body)}></div>
               </div>
-            </div>
-          ))}
-        </section>
-      ))}
+            ))}
+          </section>
+        ));
+      })()}
     </div>
 
     <div class="wrap wrap--narrow foot">

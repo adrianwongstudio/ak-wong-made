@@ -42,24 +42,17 @@ content:
       - { name: featured,     label: Featured on home?,    type: boolean, default: false }
       - { name: hasCaseStudy, label: Has full case study?, type: boolean, default: false, description: "If off, project card links directly to Live URL." }
       - { name: order,        label: Sort order,           type: number, default: 0 }
-      - name: sections
-        label: Case study sections
+      - name: blocks
+        label: Case study body
         type: object
         list:
-          summary: '{fields.title}'
+          summary: '{fields.chapterTitle} — {fields.caption}'
         required: true
         fields:
-          - { name: title, label: Section title, type: string, description: "Section heading, e.g. 'The problem', 'The approach', 'What was built', 'Outcome'." }
-          - name: blocks
-            label: Blocks
-            type: object
-            list:
-              summary: '{fields.caption}'
-            required: true
-            fields:
-              - { name: image,   label: Image,         type: image }
-              - { name: caption, label: Image caption, type: string }
-              - { name: body,    label: Text,          type: rich-text, required: true }
+          - { name: chapterTitle, label: Chapter title, type: string, description: "Optional. Set this to start a new chapter — a big heading is rendered above this block. Leave empty on blocks that continue the current chapter." }
+          - { name: image,        label: Image,         type: image,  description: "Optional. Leave empty for a text-only block." }
+          - { name: caption,      label: Image caption, type: string }
+          - { name: body,         label: Text,          type: rich-text, required: true, description: "Supports markdown — bold, italic, lists, links." }
 
   # ─── Blog posts ──────────────────────────────────────────
   - name: posts

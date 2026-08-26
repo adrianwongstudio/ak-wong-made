@@ -10,14 +10,12 @@ const projects = defineCollection({
     services: z.array(z.string()).min(1),
     stack: z.array(z.string()),
     teaser: z.string().max(400).describe('2-3 sentence problem/approach summary shown on the /work/ index'),
-    sections: z.array(z.object({
-      title:  z.string().optional(),
-      blocks: z.array(z.object({
-        image:   z.string().optional(),
-        caption: z.string().optional(),
-        body:    z.string(),
-      })).min(1),
-    })).min(1).describe('Case study sections. Each section has a title and one or more image+text blocks. Blocks alternate image-left / image-right within the section.'),
+    blocks: z.array(z.object({
+      chapterTitle: z.string().optional(),
+      image:        z.string().optional(),
+      caption:      z.string().optional(),
+      body:         z.string(),
+    })).min(1).describe('Case study body — a flat list of blocks. Set chapterTitle on a block to start a new chapter (blocks under a chapter alternate image-left/right).'),
     liveUrl: z.string().url().optional(),
     repoUrl: z.string().url().optional(),
     thumb: image().optional(),
