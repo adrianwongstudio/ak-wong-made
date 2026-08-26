@@ -34,6 +34,7 @@ content:
           values: ['Automation', 'Website', 'Web App']
         required: true
       - { name: stack,        label: Stack (tags),         type: string, list: true }
+      - { name: teaser,       label: Teaser,               type: text,   required: true, description: "2-3 sentence problem/approach summary. Shown on the /work/ index." }
       - { name: liveUrl,      label: Live URL,             type: string }
       - { name: repoUrl,      label: Repo URL,             type: string }
       - { name: thumb,        label: Thumbnail,            type: image }

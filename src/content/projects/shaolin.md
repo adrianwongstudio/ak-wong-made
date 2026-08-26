@@ -8,6 +8,11 @@ liveUrl: https://shaolinhunggarkungfu.com
 featured: true
 hasCaseStudy: true
 order: 1
+teaser: >
+  A Vancouver kung fu school and lion dance troupe had an outdated site — expensive to change,
+  hard for staff to update, low conversion on free-trial signups. Rebuilt on Eleventy with an
+  in-browser CMS so non-technical staff edit every page themselves. Free hosting, form-to-email
+  via Google Sheets, $0/month to run.
 ---
 
 ## The problem
