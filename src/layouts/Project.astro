@@ -24,18 +24,22 @@ const renderMd = (s: string) => marked.parse(s) as string;
     </div>
 
     <div class="wrap sections">
-      {d.sections.map((s, i) => (
-        <section class:list={['row', i % 2 === 1 && 'reversed', !s.image && 'no-image']}>
-          {s.image && (
-            <div class="image-side">
-              <img src={s.image} alt={s.title ?? d.title} loading="lazy" />
-              {s.caption && <p class="cap">{s.caption}</p>}
+      {d.sections.map(section => (
+        <section class="chapter">
+          {section.title && <h2 class="chapter-title">{section.title}</h2>}
+          {section.blocks.map((b, i) => (
+            <div class:list={['row', i % 2 === 1 && 'reversed', !b.image && 'no-image']}>
+              {b.image && (
+                <div class="image-side">
+                  <img src={b.image} alt={section.title ?? d.title} loading="lazy" />
+                  {b.caption && <p class="cap">{b.caption}</p>}
+                </div>
+              )}
+              <div class="text-side">
+                <div class="prose" set:html={renderMd(b.body)}></div>
+              </div>
             </div>
-          )}
-          <div class="text-side">
-            {s.title && <h2>{s.title}</h2>}
-            <div class="prose" set:html={renderMd(s.body)}></div>
-          </div>
+          ))}
         </section>
       ))}
     </div>
@@ -78,13 +82,26 @@ const renderMd = (s: string) => marked.parse(s) as string;
     margin-bottom: 0.35rem;
   }
 
+  .sections .chapter {
+    margin-bottom: calc(var(--stack) * 1.2);
+  }
+  .sections .chapter:last-child { margin-bottom: 0; }
+  .sections .chapter-title {
+    font: 800 var(--step-2)/1.05 var(--display);
+    color: var(--brand);
+    letter-spacing: -0.02em;
+    margin: 0 0 calc(var(--stack) * 0.5);
+    max-width: 780px;
+    margin-left: auto; margin-right: auto;
+  }
   .sections .row {
     display: grid;
     grid-template-columns: 1.05fr 1fr;
     gap: 3.5rem;
     align-items: center;
-    margin-bottom: calc(var(--stack) * 0.9);
+    margin-bottom: calc(var(--stack) * 0.7);
   }
+  .sections .row:last-child { margin-bottom: 0; }
   .sections .row.reversed .image-side { grid-column: 2; grid-row: 1; }
   .sections .row.reversed .text-side  { grid-column: 1; grid-row: 1; }
   .sections .row.no-image { grid-template-columns: 1fr; max-width: 780px; margin-left: auto; margin-right: auto; }
@@ -111,12 +128,6 @@ const renderMd = (s: string) => marked.parse(s) as string;
     font-style: italic;
   }
 
-  .text-side h2 {
-    font: 800 var(--step-2)/1.05 var(--display);
-    color: var(--brand);
-    letter-spacing: -0.02em;
-    margin: 0 0 1rem;
-  }
   .prose :global(p) { line-height: 1.7; margin: 0 0 1rem; }
   .prose :global(p:last-child) { margin-bottom: 0; }
   .prose :global(ul), .prose :global(ol) { line-height: 1.7; padding-left: 1.2rem; margin: 0 0 1rem; }

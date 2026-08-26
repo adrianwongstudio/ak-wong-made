@@ -45,12 +45,19 @@ content:
         type: object
         list: true
         required: true
-        description: "Each section renders as an alternating image-left/text-right row (first section image-left, next image-right, etc). Add as many as you need."
+        description: "Each section has a title and one or more image+text blocks. Blocks inside a section alternate image-left / image-right."
         fields:
-          - { name: title,   label: Section title,   type: string, description: "e.g. 'The problem', 'The approach', 'What was built', 'Outcome'." }
-          - { name: image,   label: Image,           type: image,  description: "Optional. Leave empty for a text-only section (fills full width)." }
-          - { name: caption, label: Image caption,   type: string, description: "Optional. Short line shown under the image." }
-          - { name: body,    label: Text,            type: rich-text, required: true, description: "Section body. Supports markdown (bold, italic, lists)." }
+          - { name: title, label: Section title, type: string, description: "e.g. 'The problem', 'The approach', 'What was built', 'Outcome'." }
+          - name: blocks
+            label: Blocks
+            type: object
+            list: true
+            required: true
+            description: "Add as many image+text pairs as you like. First block is image-left, second is image-right, third is image-left again, etc."
+            fields:
+              - { name: image,   label: Image,         type: image,     description: "Optional. Leave empty for a text-only block (fills full width)." }
+              - { name: caption, label: Image caption, type: string,    description: "Optional. Short line shown under the image." }
+              - { name: body,    label: Text,          type: rich-text, required: true, description: "Block body. Supports markdown — bold, italic, lists, links." }
 
   # ─── Blog posts ──────────────────────────────────────────
   - name: posts
