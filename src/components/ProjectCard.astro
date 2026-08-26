@@ -6,16 +6,22 @@ const d = project.data;
 const href = d.hasCaseStudy ? `/work/${project.id.replace(/\.md$/, '')}/` : d.liveUrl!;
 const external = !d.hasCaseStudy;
 ---
-<article class:list={['project', featured && 'is-featured']}>
+<article class:list={['project', featured && 'is-featured', d.thumb && 'has-thumb']}>
   <a href={href} rel={external ? 'noopener' : undefined} class="thumb-link">
-    <div class="thumb">
-      {featured && (
-        <div class="thumb-mark">
-          {d.title}
-          <span>{d.hasCaseStudy ? 'Case study →' : 'Live site →'}</span>
-        </div>
-      )}
-    </div>
+    {d.thumb ? (
+      <div class="thumb thumb--photo">
+        <img src={d.thumb} alt={d.title} loading="lazy" />
+      </div>
+    ) : (
+      <div class="thumb">
+        {featured && (
+          <div class="thumb-mark">
+            {d.title}
+            <span>{d.hasCaseStudy ? 'Case study →' : 'Live site →'}</span>
+          </div>
+        )}
+      </div>
+    )}
   </a>
   <div class="tags">
     {d.services.map(s => <span class="tag">{s}</span>)}
@@ -42,10 +48,17 @@ const external = !d.hasCaseStudy;
       repeating-linear-gradient(45deg,
         rgba(16,52,166,0.06) 0 8px, transparent 8px 16px);
   }
-  .is-featured .thumb {
+  .is-featured:not(.has-thumb) .thumb {
     background: linear-gradient(135deg, var(--brand) 0%, var(--brand-ink) 100%);
   }
-  .is-featured .thumb::after { display: none; }
+  .is-featured:not(.has-thumb) .thumb::after { display: none; }
+  .thumb--photo { background: var(--surface); }
+  .thumb--photo::after { display: none; }
+  .thumb--photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
   .thumb-mark {
     position: absolute; inset: auto 1.25rem 1.25rem 1.25rem;
     color: var(--text-invert);
