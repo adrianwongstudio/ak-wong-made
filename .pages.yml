@@ -40,7 +40,17 @@ content:
       - { name: featured,     label: Featured on home?,    type: boolean, default: false }
       - { name: hasCaseStudy, label: Has full case study?, type: boolean, default: false, description: "If off, project card links directly to Live URL." }
       - { name: order,        label: Sort order,           type: number, default: 0 }
-      - { name: body,         label: Case study body,      type: rich-text }
+      - name: sections
+        label: Case study sections
+        type: object
+        list: true
+        required: true
+        description: "Each section renders as an alternating image-left/text-right row (first section image-left, next image-right, etc). Add as many as you need."
+        fields:
+          - { name: title,   label: Section title,   type: string, description: "e.g. 'The problem', 'The approach', 'What was built', 'Outcome'." }
+          - { name: image,   label: Image,           type: image,  description: "Optional. Leave empty for a text-only section (fills full width)." }
+          - { name: caption, label: Image caption,   type: string, description: "Optional. Short line shown under the image." }
+          - { name: body,    label: Text,            type: rich-text, required: true, description: "Section body. Supports markdown (bold, italic, lists)." }
 
   # ─── Blog posts ──────────────────────────────────────────
   - name: posts

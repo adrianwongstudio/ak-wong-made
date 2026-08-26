@@ -10,6 +10,12 @@ const projects = defineCollection({
     services: z.array(z.string()).min(1),
     stack: z.array(z.string()),
     teaser: z.string().max(400).describe('2-3 sentence problem/approach summary shown on the /work/ index'),
+    sections: z.array(z.object({
+      title:   z.string().optional(),
+      image:   z.string().optional(),
+      caption: z.string().optional(),
+      body:    z.string(),
+    })).min(1).describe('Case study sections. Each renders as an alternating image-text row (first image-left, then image-right, then image-left, etc).'),
     liveUrl: z.string().url().optional(),
     repoUrl: z.string().url().optional(),
     thumb: image().optional(),
