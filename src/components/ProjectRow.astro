@@ -10,9 +10,15 @@ const reversed = index % 2 === 1;
 ---
 <article class:list={['row', reversed && 'reversed']}>
   <a href={href} rel={external ? 'noopener' : undefined} class="image-link">
-    <div class="image">
-      <div class="mark">{d.title}</div>
-    </div>
+    {d.thumb ? (
+      <div class="image image--photo">
+        <img src={d.thumb} alt={d.title} loading="lazy" />
+      </div>
+    ) : (
+      <div class="image image--placeholder">
+        <div class="mark">{d.title}</div>
+      </div>
+    )}
   </a>
   <div class="text">
     <div class="client">Client &mdash; {d.client}</div>
@@ -50,13 +56,22 @@ const reversed = index % 2 === 1;
   .image-link { display: block; border: none; }
   .image {
     aspect-ratio: 16/10;
-    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-ink) 100%);
     border-radius: var(--radius);
     position: relative; overflow: hidden;
     transition: transform .2s ease;
+    border: 1px solid var(--line);
   }
   .image-link:hover .image { transform: translateY(-2px); }
-  .image::after {
+  .image--photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .image--placeholder {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-ink) 100%);
+    border-color: transparent;
+  }
+  .image--placeholder::after {
     content: "";
     position: absolute; inset: 0;
     background:

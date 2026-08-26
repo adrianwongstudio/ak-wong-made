@@ -18,7 +18,7 @@ const projects = defineCollection({
     })).min(1).describe('Case study body — a flat list of blocks. Set chapterTitle on a block to start a new chapter (blocks under a chapter alternate image-left/right).'),
     liveUrl: z.string().url().optional(),
     repoUrl: z.string().url().optional(),
-    thumb: image().optional(),
+    thumb: z.string().optional(),
     featured: z.boolean().default(false),
     hasCaseStudy: z.boolean().default(false),
     order: z.number().default(0),
@@ -32,7 +32,7 @@ const posts = defineCollection({
     date: z.date(),
     tags: z.array(z.string()).default([]),
     description: z.string(),
-    hero: image().optional(),
+    hero: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });
