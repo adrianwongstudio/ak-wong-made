@@ -65,3 +65,28 @@ a:hover { color: var(--brand-ink); }
 
 /* In-prose links get underlines, no border-bottom */
 .prose a { text-decoration: underline; border: none; }
+
+/* In-prose images — soft border, breathing room, fluid. Uploaded via Pages CMS
+   or written inline as ![alt](/media/…). Follow the image with a plain italic
+   paragraph on the next line to get a centered caption:
+     ![Login screen](/media/login.png)
+     *Login screen — before the redesign*
+*/
+.prose img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  margin: 2rem 0 0.4rem;
+}
+/* Paragraph that contains only an image — collapse its bottom margin so the
+   next paragraph (caption) sits directly under the image. */
+.prose p:has(> img:only-child) { margin: 0; }
+.prose p:has(> img:only-child) + p > em:only-child {
+  display: block; text-align: center;
+  color: var(--text-mute);
+  font-size: var(--step--1);
+  font-style: normal;
+  margin: 0.5rem auto 2rem;
+  max-width: 55ch;
+}
