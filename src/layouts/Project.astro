@@ -150,12 +150,14 @@ const renderMd = (s: string) => marked.parse(s) as string;
   .zoomable:hover { transform: translateY(-2px); }
   .image-side img {
     width: 100%;
-    aspect-ratio: 16/10;
-    object-fit: cover;
+    max-height: 70vh;
+    object-fit: contain;
     border-radius: var(--radius);
     border: 1px solid var(--line);
     background: var(--surface);
     display: block;
+    padding: 1rem;
+    box-sizing: border-box;
   }
   .cap {
     text-align: center;
