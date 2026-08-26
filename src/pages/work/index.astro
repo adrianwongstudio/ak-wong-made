@@ -39,21 +39,18 @@ const filterOptions = ['All', ...uniqueServices];
           } catch (_) { /* ignore malformed hrefs */ }
         });
 
-        // Filter rows, re-alternate visible index for image-left/right
+        // Filter rows
         const rows = document.querySelectorAll('[data-project-services]');
-        let visibleIdx = 0;
+        let visible = 0;
         rows.forEach((row) => {
           const services = (row.getAttribute('data-project-services') || '').split('|');
           const show = !type || services.includes(type);
           row.hidden = !show;
-          if (show) {
-            row.classList.toggle('reversed', visibleIdx % 2 === 1);
-            visibleIdx++;
-          }
+          if (show) visible++;
         });
 
         const empty = document.querySelector('.empty');
-        if (empty) empty.hidden = visibleIdx > 0;
+        if (empty) empty.hidden = visible > 0;
       }
       apply();
       // If user clicks a chip that lives on this same page, catch it and

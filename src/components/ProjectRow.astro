@@ -6,10 +6,9 @@ const d = project.data;
 const slug = project.id.replace(/\.md$/, '');
 const href = d.hasCaseStudy ? `/work/${slug}/` : d.liveUrl!;
 const external = !d.hasCaseStudy;
-const reversed = index % 2 === 1;
 ---
 <article
-  class:list={['row', reversed && 'reversed']}
+  class="row"
   data-project-services={d.services.join('|')}
 >
   <a href={href} rel={external ? 'noopener' : undefined} class="image-link">
@@ -48,13 +47,12 @@ const reversed = index % 2 === 1;
     align-items: center;
     margin-bottom: calc(var(--stack) * 0.9);
   }
-  .row.reversed .image-link { grid-column: 2; grid-row: 1; }
-  .row.reversed .text { grid-column: 1; grid-row: 1; }
+  /* Fix filter: [hidden] browser default is display:none, but .row's
+     display:grid was overriding it. Restore hiding for filtered rows. */
+  .row[hidden] { display: none; }
   .text { display: flex; flex-direction: column; justify-content: center; }
   @media (max-width: 820px) {
     .row { grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: var(--stack); }
-    .row.reversed .image-link,
-    .row.reversed .text { grid-column: 1; grid-row: auto; }
   }
 
   .image-link {
