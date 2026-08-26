@@ -1,5 +1,6 @@
 ---
 import Base from './Base.astro';
+import Lightbox from '../components/Lightbox.astro';
 import { marked } from 'marked';
 import type { CollectionEntry } from 'astro:content';
 interface Props { project: CollectionEntry<'projects'>; }
@@ -43,7 +44,17 @@ const renderMd = (s: string) => marked.parse(s) as string;
               <div class:list={['row', i % 2 === 1 && 'reversed', !b.image && 'no-image']}>
                 {b.image && (
                   <div class="image-side">
-                    <img src={b.image} alt={chapter.title ?? d.title} loading="lazy" />
+                    <a
+                      href={b.image}
+                      class="zoomable"
+                      data-lightbox
+                      data-src={b.image}
+                      data-alt={chapter.title ?? d.title}
+                      data-caption={b.caption ?? ''}
+                      aria-label="Expand image"
+                    >
+                      <img src={b.image} alt={chapter.title ?? d.title} loading="lazy" />
+                    </a>
                     {b.caption && <p class="cap">{b.caption}</p>}
                   </div>
                 )}
@@ -61,6 +72,7 @@ const renderMd = (s: string) => marked.parse(s) as string;
       <a href="/work/">&larr; All projects</a>
     </div>
   </article>
+  <Lightbox />
 </Base>
 
 <style>
@@ -125,6 +137,13 @@ const renderMd = (s: string) => marked.parse(s) as string;
     .sections .row.reversed .text-side { grid-column: 1; grid-row: auto; }
   }
 
+  .zoomable {
+    display: block;
+    border: none;
+    cursor: zoom-in;
+    transition: transform .2s ease;
+  }
+  .zoomable:hover { transform: translateY(-2px); }
   .image-side img {
     width: 100%;
     aspect-ratio: 16/10;
@@ -132,6 +151,7 @@ const renderMd = (s: string) => marked.parse(s) as string;
     border-radius: var(--radius);
     border: 1px solid var(--line);
     background: var(--surface);
+    display: block;
   }
   .cap {
     text-align: center;
