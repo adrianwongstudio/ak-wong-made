@@ -43,9 +43,9 @@ const reversed = index % 2 === 1;
 <style>
   .row {
     display: grid;
-    grid-template-columns: 1.25fr 1fr;
+    grid-template-columns: 1.35fr 1fr;
     gap: 3.5rem;
-    align-items: stretch;
+    align-items: center;
     margin-bottom: calc(var(--stack) * 0.9);
   }
   .row.reversed .image-link { grid-column: 2; grid-row: 1; }
@@ -60,23 +60,24 @@ const reversed = index % 2 === 1;
   .image-link {
     display: block;
     border: none;
-    height: 100%;
   }
   .image {
-    height: 100%;
-    min-height: 22rem;
     border-radius: var(--radius);
-    position: relative; overflow: hidden;
+    position: relative;
     transition: transform .2s ease;
-    border: 1px solid var(--line);
-    background: var(--surface);
   }
   .image-link:hover .image { transform: translateY(-2px); }
   .image--photo img {
-    width: 100%; height: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: auto;
     display: block;
-    padding: 1rem;
+    border-radius: var(--radius);
+  }
+  /* Placeholder (no thumb) keeps a fixed shape */
+  .image--placeholder {
+    aspect-ratio: 16/10;
+    overflow: hidden;
+    border: 1px solid transparent;
   }
   @media (max-width: 820px) {
     .image { aspect-ratio: 16/10; height: auto; min-height: 0; }
