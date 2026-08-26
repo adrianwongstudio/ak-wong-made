@@ -12,7 +12,7 @@ const renderMd = (s: string) => marked.parse(s) as string;
 ---
 <Base title={`${d.title} — AK Wong Made`} description={`${d.client} · ${d.year}`} current="work">
   <article class="case">
-    <div class="wrap wrap--narrow head">
+    <div class="wrap head">
       <div class="mono-label">Case study &mdash; {d.year}</div>
       <h1>{d.title}</h1>
       <p class="teaser">{d.teaser}</p>
@@ -82,22 +82,26 @@ const renderMd = (s: string) => marked.parse(s) as string;
     font: 800 var(--step-3)/1 var(--display);
     color: var(--brand);
     letter-spacing: -0.025em;
-    margin: 0 0 1.25rem; max-width: 22ch;
+    margin: 0 0 1.5rem;
+    max-width: 18ch;
   }
   .teaser {
     font-size: var(--step-1);
     color: var(--text);
     line-height: 1.55;
-    max-width: 55ch;
+    max-width: 70ch;
     margin: 0 0 2.5rem;
   }
   .meta {
-    display: grid; grid-template-columns: repeat(2, 1fr);
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1rem 2rem;
     padding: 1.5rem 0;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
     font-size: var(--step--1);
+  }
+  @media (max-width: 820px) {
+    .meta { grid-template-columns: repeat(2, 1fr); }
   }
   .meta span {
     display: block;
