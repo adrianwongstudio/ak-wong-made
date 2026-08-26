@@ -8,20 +8,19 @@ import { getCollection } from 'astro:content';
 const allProjects = (await getCollection('projects'))
   .sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
 
+// Derive chips from actual project data — new services added via the CMS
+// automatically show up as filters here without a code change.
+const uniqueServices = [...new Set(allProjects.flatMap(p => p.data.services))].sort();
+const filterOptions = ['All', ...uniqueServices];
+
 const type = Astro.url.searchParams.get('type');
-const typeMap: Record<string, string> = {
-  'Automation': 'Automation',
-  'Websites': 'Website',
-  'Web Apps': 'Web App',
-};
-const mapped = type ? typeMap[type] ?? type : null;
-const projects = filterByType(allProjects, p => p.data.services, mapped);
+const projects = filterByType(allProjects, p => p.data.services, type);
 ---
 <Base title="Work — AK Wong Made" current="work">
   <section class="wrap" style="padding: calc(var(--stack) * 0.9) 0 var(--stack);">
     <div class="mono-label">Work</div>
     <h1>Selected projects.</h1>
-    <FilterChips options={['All', 'Automation', 'Websites', 'Web Apps']} />
+    <FilterChips options={filterOptions} />
     <div class="rows">
       {projects.map((p, i) => <ProjectRow project={p} index={i} />)}
     </div>

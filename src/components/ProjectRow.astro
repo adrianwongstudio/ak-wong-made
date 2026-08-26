@@ -7,13 +7,6 @@ const slug = project.id.replace(/\.md$/, '');
 const href = d.hasCaseStudy ? `/work/${slug}/` : d.liveUrl!;
 const external = !d.hasCaseStudy;
 const reversed = index % 2 === 1;
-
-// Map schema value → filter chip label (for clickable category)
-const chipLabel: Record<string, string> = {
-  'Automation': 'Automation',
-  'Website':    'Websites',
-  'Web App':    'Web Apps',
-};
 ---
 <article class:list={['row', reversed && 'reversed']}>
   <a href={href} rel={external ? 'noopener' : undefined} class="image-link">
@@ -26,7 +19,7 @@ const chipLabel: Record<string, string> = {
     <h2><a href={href} rel={external ? 'noopener' : undefined}>{d.title}</a></h2>
     <div class="cats">
       {d.services.map(s => (
-        <a href={`/work/?type=${encodeURIComponent(chipLabel[s] ?? s)}`} class="cat">{chipLabel[s] ?? s}</a>
+        <a href={`/work/?type=${encodeURIComponent(s)}`} class="cat">{s}</a>
       ))}
     </div>
     <p class="teaser">{d.teaser}</p>

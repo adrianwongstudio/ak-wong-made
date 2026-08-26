@@ -28,11 +28,10 @@ content:
       - { name: client,       label: Client,               type: string, required: true }
       - name: services
         label: Services
-        type: select
+        type: string
         list: true
-        options:
-          values: ['Automation', 'Website', 'Web App']
         required: true
+        description: "One tag per service line. Existing values so far — Automation, Website, Web App. Feel free to add new ones (Branding, Consulting, etc.) — they'll show up as filter chips on /work/ automatically."
       - { name: stack,        label: Stack (tags),         type: string, list: true }
       - { name: teaser,       label: Teaser,               type: text,   required: true, description: "2-3 sentence problem/approach summary. Shown on the /work/ index." }
       - { name: liveUrl,      label: Live URL,             type: string }
