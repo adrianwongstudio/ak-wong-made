@@ -23,6 +23,12 @@ const byEra = eras
 ---
 <div class="timeline">
   <div class="spine"></div>
+
+  <div class="col-heads">
+    <div class="col-head col-head--left">Work</div>
+    <div class="col-head col-head--right">Volunteer</div>
+  </div>
+
   {byEra.map(group => (
     <>
       <TimelineEra era={group.era} />
@@ -39,20 +45,51 @@ const byEra = eras
   .timeline {
     position: relative;
     padding: 0 0 var(--stack);
-    max-width: 780px;
+    max-width: 1100px;
     margin: 0 auto;
+    /* Two-column grid for milestones: work on left, volunteer on right.
+       Column-full items (chapters, birth, heads) span both. */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 5rem;
   }
+  /* Center spine — separates work / volunteer. Fades at top and bottom. */
   .spine {
     position: absolute;
-    left: 32px; top: 0; bottom: 0;
+    left: 50%;
+    top: 0; bottom: 0;
     width: 2px;
+    transform: translateX(-50%);
     background: linear-gradient(
       to bottom,
       transparent 0,
-      var(--brand) 40px,
-      var(--brand) calc(100% - 40px),
+      var(--brand) 60px,
+      var(--brand) calc(100% - 60px),
       transparent 100%
     );
+    pointer-events: none;
   }
-  @media (max-width: 600px) { .spine { left: 22px; } }
+  .col-heads {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 5rem;
+    margin-bottom: 1.5rem;
+  }
+  .col-head {
+    font: 500 var(--step--1)/1 var(--mono);
+    color: var(--accent);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .col-head--left  { text-align: right; padding-right: 2.5rem; }
+  .col-head--right { text-align: left;  padding-left:  2.5rem; }
+
+  /* Mobile: collapse to a single column, hide the center spine, and
+     the column heads. Milestones stack in chronological order. */
+  @media (max-width: 780px) {
+    .timeline { grid-template-columns: 1fr; column-gap: 0; padding-left: 40px; }
+    .spine { left: 20px; transform: none; }
+    .col-heads { display: none; }
+  }
 </style>

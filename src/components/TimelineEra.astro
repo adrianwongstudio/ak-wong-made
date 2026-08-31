@@ -10,34 +10,40 @@ const { era } = Astro.props;
 
 <style>
   .era-break {
+    grid-column: 1 / -1;
     position: relative;
-    padding: 1.5rem 0 1.5rem 90px;
-    margin: 3rem 0 2rem;
+    text-align: center;
+    padding: 1.5rem 0 1rem;
+    margin: 3rem 0 1.5rem;
   }
+  /* Ochre dot centered on the spine, behind the label */
   .era-break::before {
     content: "";
     position: absolute;
-    left: 20px; top: 50%;
+    left: 50%; top: 0;
     width: 26px; height: 26px;
     background: var(--accent);
     border: 3px solid var(--bg);
     border-radius: 50%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
     box-shadow: 0 0 0 2px var(--accent);
+    z-index: 1;
   }
   .era-label {
     font: 500 var(--step--1)/1 var(--mono);
     color: var(--accent);
     letter-spacing: 0.16em; text-transform: uppercase;
     margin-bottom: 0.4rem;
+    position: relative; z-index: 2;
   }
   h2 {
     font: 700 var(--step-2)/1.05 var(--display);
     color: var(--text);
     letter-spacing: -0.02em; margin: 0;
+    position: relative; z-index: 2;
   }
-  @media (max-width: 600px) {
-    .era-break { padding-left: 65px; }
-    .era-break::before { left: 10px; }
+  @media (max-width: 780px) {
+    .era-break { text-align: left; padding-left: 40px; }
+    .era-break::before { left: 12px; transform: translateY(-50%); }
   }
 </style>

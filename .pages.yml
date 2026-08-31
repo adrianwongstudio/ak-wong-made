@@ -109,6 +109,13 @@ content:
         options:
           values: ['milestone', 'era-marker', 'birth']
         description: "Almost always 'milestone'. 'birth' is the one book-end marker."
+      - name: category
+        label: Category
+        type: select
+        default: work
+        options:
+          values: ['work', 'volunteer']
+        description: "Left column = work. Right column = volunteer. Defaults to work."
       - { name: image,    label: Image,               type: image }
       - { name: featured, label: Featured card?,      type: boolean, default: false, description: "Featured entries get the filled-blue image treatment on the timeline." }
       - { name: order,    label: Order (within year), type: number,  default: 0 }

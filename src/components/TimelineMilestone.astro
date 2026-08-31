@@ -5,6 +5,7 @@ const { entry, hasDetail = true } = Astro.props;
 const d = entry.data;
 const slug = entry.id.replace(/\.md$/, '');
 const isBirth = d.type === 'birth';
+const category = d.category ?? 'work';
 ---
 {isBirth ? (
   <div class="birth">
@@ -12,11 +13,13 @@ const isBirth = d.type === 'birth';
     <h2>{d.title}</h2>
   </div>
 ) : (
-  <article class:list={['milestone', d.featured && 'featured']}>
+  <article class:list={['milestone', `cat-${category}`, d.featured && 'featured']}>
     <div class="year">&mdash; {d.year}</div>
     <h3>{d.title}</h3>
     <div class="card">
-      <div class="img" data-caption={d.title}></div>
+      {d.image && (
+        <div class="img" data-caption={d.title}></div>
+      )}
       <div class="body">
         <slot />
         {hasDetail && (
@@ -30,18 +33,38 @@ const isBirth = d.type === 'birth';
 <style>
   .milestone {
     position: relative;
-    padding: 0 0 3rem 90px;
+    padding-bottom: 3rem;
   }
+  /* Column placement: work → left grid col, volunteer → right */
+  .milestone.cat-work      { grid-column: 1; }
+  .milestone.cat-volunteer { grid-column: 2; }
+
+  /* Horizontal connector line + dot on the center spine.
+     Left-side (work) → connector extends right past the card into the gutter.
+     Right-side (volunteer) → connector extends left. */
   .milestone::before {
     content: "";
     position: absolute;
-    left: 25px; top: 12px;
-    width: 16px; height: 16px;
+    top: 14px;
+    height: 2px;
+    background: var(--brand);
+    width: 2.5rem;
+  }
+  .milestone.cat-work::before      { right: -2.5rem; }
+  .milestone.cat-volunteer::before { left:  -2.5rem; }
+  .milestone::after {
+    content: "";
+    position: absolute;
+    top: 8px;
+    width: 14px; height: 14px;
     background: var(--bg);
     border: 2.5px solid var(--brand);
     border-radius: 50%;
     z-index: 2;
   }
+  .milestone.cat-work::after      { right: calc(-2.5rem - 7px); }
+  .milestone.cat-volunteer::after { left:  calc(-2.5rem - 7px); }
+
   .year {
     font: 500 var(--step--1)/1 var(--mono);
     color: var(--accent);
@@ -89,30 +112,46 @@ const isBirth = d.type === 'birth';
   }
   .featured .img::after { color: var(--accent); }
 
+  /* Birth is a special centered marker spanning both columns */
   .birth {
+    grid-column: 1 / -1;
     position: relative;
-    padding: 1rem 0 1rem 90px;
-    margin-top: 1rem;
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: 2rem;
   }
   .birth::before {
     content: "";
     position: absolute;
-    left: 20px; top: 50%;
+    left: 50%;
+    top: 50%;
     width: 26px; height: 26px;
     background: var(--emphasis);
     border: 3px solid var(--bg);
     border-radius: 50%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
     box-shadow: 0 0 0 2px var(--emphasis);
   }
-  .birth .year { color: var(--emphasis); margin-bottom: 0.35rem; }
+  .birth .year { color: var(--emphasis); margin-bottom: 0.35rem; position: relative; z-index: 1; }
   .birth h2 {
     font: 700 var(--step-1)/1.05 var(--display);
     color: var(--text); margin: 0;
+    position: relative; z-index: 1;
   }
-  @media (max-width: 600px) {
-    .milestone, .birth { padding-left: 65px; }
-    .milestone::before { left: 15px; }
-    .birth::before { left: 10px; }
+
+  /* Mobile: single column, spine on left, connector dots point right */
+  @media (max-width: 780px) {
+    .milestone { grid-column: 1 !important; padding-left: 40px; }
+    .milestone.cat-volunteer::before,
+    .milestone.cat-work::before {
+      left: -20px; right: auto;
+      width: 20px;
+    }
+    .milestone.cat-volunteer::after,
+    .milestone.cat-work::after {
+      left: -28px; right: auto;
+    }
+    .birth { grid-column: 1 !important; text-align: left; padding-left: 40px; }
+    .birth::before { left: -8px; transform: translateY(-50%); }
   }
 </style>
