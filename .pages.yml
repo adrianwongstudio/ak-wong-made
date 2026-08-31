@@ -112,10 +112,10 @@ content:
       - name: category
         label: Category
         type: select
-        default: work
+        default: career
         options:
-          values: ['work', 'volunteer']
-        description: "Left column = work. Right column = volunteer. Defaults to work."
+          values: ['career', 'volunteer']
+        description: "Left column = career. Right column = volunteer. Defaults to career."
       - { name: image,    label: Image,               type: image }
       - { name: featured, label: Featured card?,      type: boolean, default: false, description: "Featured entries get the filled-blue image treatment on the timeline." }
       - { name: order,    label: Order (within year), type: number,  default: 0 }

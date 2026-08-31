@@ -44,7 +44,7 @@ const life = defineCollection({
     year: z.number(),
     era: z.enum(['Studio Life', 'Corporate Years', 'University', 'Growing Up']),
     type: z.enum(['milestone', 'era-marker', 'birth']).default('milestone'),
-    category: z.enum(['work', 'volunteer']).default('work').describe('Which column the milestone appears in on /life/ — work on the left, volunteer on the right.'),
+    category: z.enum(['career', 'volunteer']).default('career').describe('Which column the milestone appears in on /life/ — career on the left, volunteer on the right.'),
     image: image().optional(),
     featured: z.boolean().default(false),
     order: z.number().default(0),

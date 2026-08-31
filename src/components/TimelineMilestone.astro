@@ -5,7 +5,7 @@ const { entry, hasDetail = true } = Astro.props;
 const d = entry.data;
 const slug = entry.id.replace(/\.md$/, '');
 const isBirth = d.type === 'birth';
-const category = d.category ?? 'work';
+const category = d.category ?? 'career';
 ---
 {isBirth ? (
   <div class="birth">
@@ -36,7 +36,7 @@ const category = d.category ?? 'work';
     padding-bottom: 3rem;
   }
   /* Column placement: work → left grid col, volunteer → right */
-  .milestone.cat-work      { grid-column: 1; }
+  .milestone.cat-career      { grid-column: 1; }
   .milestone.cat-volunteer { grid-column: 2; }
 
   /* Horizontal connector line + dot on the center spine.
@@ -50,7 +50,7 @@ const category = d.category ?? 'work';
     background: var(--brand);
     width: 2.5rem;
   }
-  .milestone.cat-work::before      { right: -2.5rem; }
+  .milestone.cat-career::before      { right: -2.5rem; }
   .milestone.cat-volunteer::before { left:  -2.5rem; }
   .milestone::after {
     content: "";
@@ -62,7 +62,7 @@ const category = d.category ?? 'work';
     border-radius: 50%;
     z-index: 2;
   }
-  .milestone.cat-work::after      { right: calc(-2.5rem - 7px); }
+  .milestone.cat-career::after      { right: calc(-2.5rem - 7px); }
   .milestone.cat-volunteer::after { left:  calc(-2.5rem - 7px); }
 
   .year {
@@ -143,12 +143,12 @@ const category = d.category ?? 'work';
   @media (max-width: 780px) {
     .milestone { grid-column: 1 !important; padding-left: 40px; }
     .milestone.cat-volunteer::before,
-    .milestone.cat-work::before {
+    .milestone.cat-career::before {
       left: -20px; right: auto;
       width: 20px;
     }
     .milestone.cat-volunteer::after,
-    .milestone.cat-work::after {
+    .milestone.cat-career::after {
       left: -28px; right: auto;
     }
     .birth { grid-column: 1 !important; text-align: left; padding-left: 40px; }
