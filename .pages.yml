@@ -80,7 +80,7 @@ content:
 
   # ─── Life timeline ───────────────────────────────────────
   - name: life
-    label: Life timeline
+    label: Life stories
     path: src/content/life
     type: collection
     format: yaml-frontmatter
@@ -101,7 +101,8 @@ content:
         type: select
         options:
           values: ['Studio Life', 'Corporate Years', 'University', 'Growing Up']
-        required: true
+        description: "Optional. Leave empty and it is picked from the year."
+
       - name: type
         label: Type
         type: select
@@ -116,7 +117,18 @@ content:
         options:
           values: ['career', 'volunteer']
         description: "Left column = career. Right column = volunteer. Defaults to career."
-      - { name: image,    label: Image,               type: image }
+      - { name: image,    label: Image,               type: image, description: "Shown under the title, above the body." }
+      - { name: imageAlt, label: Image alt text,      type: string }
       - { name: featured, label: Featured card?,      type: boolean, default: false, description: "Featured entries get the filled-blue image treatment on the timeline." }
       - { name: order,    label: Order (within year), type: number,  default: 0 }
-      - { name: body,     label: Body,                type: rich-text }
+      - name: blocks
+        label: Full story
+        type: object
+        list:
+          summary: '{fields.body}'
+        description: "Detail page. Add or delete blocks; each is text with an optional image above it."
+        fields:
+          - { name: image,   label: Image,         type: image, description: "Optional. Leave empty for a text-only block." }
+          - { name: caption, label: Image caption, type: string }
+          - { name: body,    label: Text,          type: rich-text, required: true, description: "Supports markdown." }
+      - { name: body,     label: Timeline card text, type: rich-text, description: "Short text shown on the /life/ card." }

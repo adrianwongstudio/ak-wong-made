@@ -18,7 +18,7 @@ const category = d.category ?? 'career';
     <h3>{d.title}</h3>
     <div class="card">
       {d.image && (
-        <div class="img" data-caption={d.title}></div>
+        <img class="img" src={d.image} alt={d.imageAlt ?? d.title} loading="lazy" />
       )}
       <div class="body">
         <slot />
@@ -83,18 +83,12 @@ const category = d.category ?? 'career';
     overflow: hidden;
   }
   .img {
+    display: block;
+    width: 100%;
     aspect-ratio: 16/9;
-    background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 100%);
-    position: relative;
+    object-fit: cover;
+    object-position: top;
     border-bottom: 1px solid var(--line);
-  }
-  .img::after {
-    content: attr(data-caption);
-    position: absolute; inset: auto 0 0.6rem 0;
-    text-align: center;
-    font: 500 var(--step--1)/1 var(--mono);
-    color: var(--text-mute);
-    letter-spacing: 0.12em; text-transform: uppercase;
   }
   .body { padding: 1.5rem 1.75rem 1.75rem; }
   .body :global(p) { margin: 0 0 1rem; line-height: 1.6; }
@@ -107,10 +101,6 @@ const category = d.category ?? 'career';
   }
 
   .featured .card { background: var(--bg); }
-  .featured .img {
-    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-ink) 100%);
-  }
-  .featured .img::after { color: var(--accent); }
 
   /* Birth is a special centered marker spanning both columns */
   .birth {

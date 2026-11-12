@@ -42,10 +42,16 @@ const life = defineCollection({
   schema: ({ image }) => z.object({
     title: z.string(),
     year: z.number(),
-    era: z.enum(['Studio Life', 'Corporate Years', 'University', 'Growing Up']),
+    era: z.enum(['Studio Life', 'Corporate Years', 'University', 'Growing Up']).optional().describe('Optional. Derived from the year when empty.'),
     type: z.enum(['milestone', 'era-marker', 'birth']).default('milestone'),
     category: z.enum(['career', 'volunteer']).default('career').describe('Which column the milestone appears in on /life/ — career on the left, volunteer on the right.'),
-    image: image().optional(),
+    image: z.string().optional().describe('Public path, e.g. /media/life/2025-shaolin.jpg. Shown under the title, above the body.'),
+    imageAlt: z.string().optional(),
+    blocks: z.array(z.object({
+      image:   z.string().optional(),
+      caption: z.string().optional(),
+      body:    z.string(),
+    })).default([]).describe('Detail page story: a list of text blocks, each with an optional image above the text.'),
     featured: z.boolean().default(false),
     order: z.number().default(0),
   }),

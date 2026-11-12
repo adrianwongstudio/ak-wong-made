@@ -2,8 +2,9 @@
 import type { CollectionEntry } from 'astro:content';
 import TimelineEra from './TimelineEra.astro';
 import TimelineMilestone from './TimelineMilestone.astro';
-import { eras } from '../data/eras';
+import { eras, eraFor } from '../data/eras';
 import { render } from 'astro:content';
+import { marked } from 'marked';
 
 interface Props { entries: CollectionEntry<'life'>[]; }
 const { entries } = Astro.props;
@@ -14,11 +15,15 @@ const sorted = [...entries].sort((a, b) => {
 });
 
 const rendered = await Promise.all(
-  sorted.map(async e => ({ entry: e, Content: (await render(e)).Content })),
+  sorted.map(async e => ({
+    entry: e,
+    Content: (await render(e)).Content,
+    fallback: e.body?.trim() ? '' : marked.parse(e.data.blocks[0]?.body ?? '') as string,
+  })),
 );
 
 const byEra = eras
-  .map(era => ({ era, entries: rendered.filter(r => r.entry.data.era === era.key) }))
+  .map(era => ({ era, entries: rendered.filter(r => (r.entry.data.era ?? eraFor(r.entry.data.year)) === era.key) }))
   .filter(g => g.entries.length > 0);
 ---
 <div class="timeline">
@@ -32,9 +37,9 @@ const byEra = eras
   {byEra.map(group => (
     <>
       <TimelineEra era={group.era} />
-      {group.entries.map(({ entry, Content }) => (
+      {group.entries.map(({ entry, Content, fallback }) => (
         <TimelineMilestone entry={entry} hasDetail={entry.data.type === 'milestone'}>
-          <Content />
+          {fallback ? <Fragment set:html={fallback} /> : <Content />}
         </TimelineMilestone>
       ))}
     </>
